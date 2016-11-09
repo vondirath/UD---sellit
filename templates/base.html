@@ -1,0 +1,20 @@
+{# This is the main template #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <meta charset="UTF-8">
+
+    <title> Sellit today! </title>
+    <link rel=stylesheet type=text/css href="{{url_for('static', filename='style.css') }}"
+</head>
+
+<body>
+    <h1> Sellit Menu </h1> 
+    <a href="{{url_for('mainPage')}}">Home</a>
+
+{% block content %}
+{% endblock content %}
+
+</body>
+</html>

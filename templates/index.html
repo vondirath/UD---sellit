@@ -1,0 +1,19 @@
+{# template for main view of all posts #}
+{% extends "base.html" %}
+{% block content %}
+
+<h1> MAIN </h1>
+<a href="{{url_for('newPost')}}">Add a Listing!</a>
+<ul>
+    {% for post in posts %}
+    <li>
+    {{ post.title }}<br>
+    <a href="{{url_for('viewPost', post_id=post.id)}}">View post!</a>
+    </li>
+    {% else %}
+    {# default block #}
+    <li>No posts entered yet!</li>
+    {% endfor %}
+</ul> 
+
+{% endblock content %}

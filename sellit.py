@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sellitdata import Base, 
+from sellitdata import Base, Posts, Questions
 
 engine = create_engine('sqlite:///sellitdata.db')
 Base.metadata.bind = engine
@@ -12,40 +12,32 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+# delete
+posts = ''
+
+# main page route
 @app.route('/')
-@app.route('/restaurants/')
+@app.route('/main/')
 def mainPage():
     # restaurants = session.query(Restaurant)
-    return render_template('index.html', restaurants=restaurants )
+    return render_template('index.html', posts=posts )
 
-@app.route('/restaurants/new/')
-def newRestaurant():
-    return render_template('newrestaurant.html')
+@app.route('/post/new/')
+def newPost():
+    return render_template('newpost.html')
 
-@app.route('/restaurants/<int:restaurant_id>/')
-@app.route('/restaurants/<int:restaurant_id>/menu/')
-def viewMenu(restaurant_id):
-    return render_template('restaurantmenu.html', restaurant=restaurant, items=items)
+@app.route('/post/<int:post_id>/')
+def viewPost(post_id):
+    return render_template('viewpost.html', post=post)
 
-@app.route('/restaurants/<int:restaurant_id>/edit/')
-def editRestaurant(restaurant_id):
-    return render_template('editrestaurant.html')
+@app.route('/post/<int:post_id>/edit/')
+def editPost(post_id):
+    return render_template('editpost.html')
 
-@app.route('/restaurants/<int:restaurant_id>/delete/')
-def deleteRestaurant(restaurant_id):
-    return render_template('deleterestaurant.html')
+@app.route('/post/<int:post_id>/delete/')
+def deletePost(post_id):
+    return render_template('deletepost.html')
 
-@app.route('/restaurants/<int:restaurant_id>/menu/new/')
-def addItem(restaurant_id):
-    return render_template('additem.html')
-
-@app.route('/restaurants/<int:restaurant_id>/menu/<int:menu_id>/edit/')
-def deleteItem(restaurant_id, menu_id):
-    return render_template('deleteitem.html')
-
-@app.route('/restaurants/<int:restaurant_id>/menu/<int:menu_id>/delete/')
-def editItem(restaurant_id, menu_id):
-    return render_template('edititem.html')
 
 # wont work unless ran from this file
 if __name__ == '__main__':
