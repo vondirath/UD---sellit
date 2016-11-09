@@ -3,6 +3,8 @@
 {% block content %}
 
 <h1>{{ post.title }}</h1>
-<h2> view post </h2>
+    <p> Created: {{ post.time_created }}</p>
+    <p> Price: {{ post.price }} </p>
+    <p> Description: {{ post.description }} </p>
 
 {% endblock content %}

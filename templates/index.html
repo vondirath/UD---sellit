@@ -7,12 +7,20 @@
 <ul>
     {% for post in posts %}
     <li>
-    {{ post.title }}<br>
-    <a href="{{url_for('viewPost', post_id=post.id)}}">View post!</a>
-    </li>
-    {% else %}
-    {# default block #}
-    <li>No posts entered yet!</li>
+        {{ post.title }}<br>
+        <a href="{{url_for('viewPost', post_id=post.id)}}">View post!</a>
+        <br>
+            for: ${{ post.price }}
+        <br>
+            at: {{ post.time_created }}
+        <br>
+            {% if post.time_updated %}
+                {{ post.time_dated }}
+            {% endif %}
+        </li>
+        {% else %}
+        {# default block #}
+        <li>No posts entered yet!</li>
     {% endfor %}
 </ul> 
 

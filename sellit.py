@@ -17,8 +17,8 @@ session = DBSession()
 @app.route('/')
 @app.route('/main/')
 def mainPage():
-    # restaurants = session.query(Restaurant)
-    posts = session.query(Posts)
+    # will query posts so newest comes first
+    posts = session.query(Posts).order_by('time_created desc')
     return render_template('index.html', posts=posts )
 
 @app.route('/post/new/', methods=['GET','POST'])
@@ -40,6 +40,7 @@ def newPost():
 
 @app.route('/post/<int:post_id>/')
 def viewPost(post_id):
+    post = session.query(Posts).filter_by(id=post_id).one()
     return render_template('viewpost.html', post=post)
 
 @app.route('/post/<int:post_id>/edit/')
