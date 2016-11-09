@@ -14,7 +14,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.schema import Table
 from sqlalchemy.sql import func
 
-
 # Lets sqlalchemy know that our classes are special sqlalchemy
 # classes that correspond to tables in database
 Base = declarative_base()
