@@ -10,12 +10,12 @@
         {{ post.title }}<br>
         <a href="{{url_for('viewPost', post_id=post.id)}}">View post!</a>
         <br>
-            for: ${{ post.price }}
+            for: $ {{ post.price }}
         <br>
             at: {{ post.time_created }}
         <br>
             {% if post.time_updated %}
-                {{ post.time_dated }}
+               Updated: {{ post.time_updated }}
             {% endif %}
         </li>
         {% else %}

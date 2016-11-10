@@ -8,10 +8,20 @@
     <title> Sellit today! </title>
     <link rel=stylesheet type=text/css href="{{url_for('static', filename='style.css') }}"
 </head>
-
 <body>
     <h1> Sellit Menu </h1> 
     <a href="{{url_for('mainPage')}}">Home</a>
+    <p> <a href="#"> Log In</a> | <a href="#"> Sign Up</a></p>
+    <div> 
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                {% for message in messages %}
+                <li><strong>{{ message }}</strong></li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
 
 {% block content %}
 {% endblock content %}

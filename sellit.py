@@ -34,6 +34,7 @@ def newPost():
                         )
         session.add(newPost)
         session.commit()
+        flash("New post!")
         return redirect(url_for('mainPage'))
     else:
         return render_template('newpost.html')
@@ -54,13 +55,16 @@ def editPost(post_id):
             editedPost.price = request.form['price']
         session.add(editedPost)
         session.commit()
+        flash("Edit successful!")
         return redirect(url_for('viewPost', post_id=post_id))
     else:
         return render_template('editpost.html', post=editedPost)
 
 @app.route('/post/<int:post_id>/delete/')
 def deletePost(post_id):
-    return render_template('deletepost.html')
+    post = session.query(Posts).filter_by(id=post_id).one()
+    flash("Delete successful!")
+    return render_template('deletepost.html', post=post, post_id=post_id)
 
 
 # wont work unless ran from this file
