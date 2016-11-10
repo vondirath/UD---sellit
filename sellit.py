@@ -43,9 +43,20 @@ def viewPost(post_id):
     post = session.query(Posts).filter_by(id=post_id).one()
     return render_template('viewpost.html', post=post)
 
-@app.route('/post/<int:post_id>/edit/')
+@app.route('/post/<int:post_id>/edit/', methods=['GET', 'POST'])
 def editPost(post_id):
-    return render_template('editpost.html')
+    editedPost = session.query(Posts).filter_by(id=post_id).one()
+    if request.method == 'POST':
+        if request.form['title']:
+            editedPost.title = request.form['title']
+            editedPost.description = request.form['description']
+            editedPost.post_img_path = request.form['image']
+            editedPost.price = request.form['price']
+        session.add(editedPost)
+        session.commit()
+        return redirect(url_for('viewPost', post_id=post_id))
+    else:
+        return render_template('editpost.html', post=editedPost)
 
 @app.route('/post/<int:post_id>/delete/')
 def deletePost(post_id):
