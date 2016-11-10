@@ -7,8 +7,9 @@ image upload, comments between two people, posting by category and location.
 
 ### What do i need to run it?
 ---------------
-* You will need virtualbox - https://www.virtualbox.org/
-* vangrat - https://www.vagrantup.com
+* You will need a virtual server:
+  * virtualbox - https://www.virtualbox.org/
+  * vangrat - https://www.vagrantup.com
 * Your favorite command-line tool - https://www.gnu.org/software/bash/bash.html
 * Flask - http://flask.pocoo.org/
 * Python 2.7 - https://www.python.org/
@@ -29,3 +30,6 @@ image upload, comments between two people, posting by category and location.
 ---------------
 * https://github.com/vondirath/UD---sellit
 
+### License
+---------------
+Available at https://github.com/vondirath/UD---sellit/blob/master/LICENSE
