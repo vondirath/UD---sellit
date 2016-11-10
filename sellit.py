@@ -21,6 +21,7 @@ def mainPage():
     posts = session.query(Posts).order_by('time_created desc')
     return render_template('index.html', posts=posts )
 
+# route includes get and post request
 @app.route('/post/new/', methods=['GET','POST'])
 def newPost():
     if request.method == 'POST':
@@ -41,17 +42,22 @@ def newPost():
 
 @app.route('/post/<int:post_id>/')
 def viewPost(post_id):
+    # selects passed in post and renders template
     post = session.query(Posts).filter_by(id=post_id).one()
     return render_template('viewpost.html', post=post)
 
 @app.route('/post/<int:post_id>/edit/', methods=['GET', 'POST'])
 def editPost(post_id):
+    # selects passed in post and renders template
     editedPost = session.query(Posts).filter_by(id=post_id).one()
     if request.method == 'POST':
         if request.form['title']:
             editedPost.title = request.form['title']
+        if request.form['description']:
             editedPost.description = request.form['description']
+        if request.form['image']:
             editedPost.post_img_path = request.form['image']
+        if request.form['price']:
             editedPost.price = request.form['price']
         session.add(editedPost)
         session.commit()
@@ -62,6 +68,7 @@ def editPost(post_id):
 
 @app.route('/post/<int:post_id>/delete/')
 def deletePost(post_id):
+    # selects passed in post and renders template
     post = session.query(Posts).filter_by(id=post_id).one()
     flash("Delete successful!")
     return render_template('deletepost.html', post=post, post_id=post_id)
@@ -69,7 +76,7 @@ def deletePost(post_id):
 
 # wont work unless ran from this file
 if __name__ == '__main__':
-    # this should not be visable, for flash messaging.
+    # for flash messaging.
     app.secret_key = 'super_secret_key'
     # reloads itself when code is changed
     app.debug = True
