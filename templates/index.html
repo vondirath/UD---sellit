@@ -10,6 +10,8 @@
         {{ post.title }}<br>
         <a href="{{url_for('viewPost', post_id=post.id)}}">View post!</a>
         <br>
+        <img class="mainimg" src="{{ url_for('post_img', filename = post.post_img_path)}}" alt="Post Image"/>
+        <br>
             for: $ {{ post.price }}
         <br>
             at: {{ post.time_created }}

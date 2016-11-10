@@ -2,13 +2,14 @@
 # main app related
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 # for image uploading import with pip install Flask-Uploads
-from flask_uploads import UploadSet, configure_uploads, IMAGES
+from flask_uploads import UploadSet, configure_uploads, IMAGES, send_from_directory
 # database related
 from datetime import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sellitdata import Base, Posts, Questions
 #[END IMPORTS]
+import os
 
 app = Flask(__name__)
 
@@ -25,18 +26,6 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-
-
-@app.route('/upload', methods=['GET', 'POST'])
-def upload():
-    if request.method == 'POST' and 'photo' in request.files:
-        filename = photos.save(request.files['photo'])
-        #rec = Photo(filename=filename, user=g.user.id)
-        #rec.store()
-        #flash("Photo saved.")
-        #return redirect(url_for('show', id=rec.id))
-        return filename
-    return render_template('upload.html')
 
 @app.route('/photo/<id>')
 def show(id):
@@ -59,22 +48,26 @@ def mainPage():
 # route includes get and post request
 @app.route('/post/new/', methods=['GET','POST'])
 def newPost():
-    if request.method == 'POST':
+    if request.method == 'POST' and 'photo' in request.files:
+        filename = photos.save(request.files['photo'])
         server_default = datetime.now()
         newPost = Posts(
                         title = request.form['title'], 
                         description = request.form['description'], 
                         price = request.form['price'], 
-                        post_img_path = request.form['post_img_path'],
+                        post_img_path = str(filename),
                         time_created = server_default
                         )
         session.add(newPost)
         session.commit()
-        flash("New post!")
+        flash("Posted new item!")
         return redirect(url_for('mainPage'))
     else:
         return render_template('newpost.html')
 
+@app.route('/static/upload/photos/<filename>')
+def post_img(filename):
+        return send_from_directory(app.config['UPLOADED_PHOTOS_DEST'], filename)
 
 @app.route('/post/<int:post_id>/', methods=['GET', 'POST'])
 def viewPost(post_id):
@@ -96,6 +89,11 @@ def editPost(post_id):
             editedPost.post_img_path = request.form['image']
         if request.form['price']:
             editedPost.price = request.form['price']
+        # does not work yet
+        if request.form['photo']:
+            filename = post_id.post_img_path
+            os.remove('/static/upload/photos/%s') % filename
+            editedPost.post_img_path = str(filename)
         session.add(editedPost)
         session.commit()
         flash("Edit successful!")

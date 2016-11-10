@@ -1,7 +1,7 @@
 {# template for viewing a post #}
 {% extends "base.html" %}
 {% block content %}
-
+<img src="{{ url_for('post_img', filename = post.post_img_path)}}"/>
 <h1>{{ post.title }}</h1>
     <p> Created: {{ post.time_created }}</p>
     <p> Price: {{ post.price }} </p>
