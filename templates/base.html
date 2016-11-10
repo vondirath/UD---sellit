@@ -13,6 +13,7 @@
     <a href="{{url_for('mainPage')}}">Home</a>
     <p> <a href="#"> Log In</a> | <a href="#"> Sign Up</a></p>
     <div> 
+        {# add to css animate model, add info to cookie for temp storage? #}
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <ul>

@@ -21,6 +21,7 @@ def mainPage():
     posts = session.query(Posts).order_by('time_created desc')
     return render_template('index.html', posts=posts )
 
+
 # route includes get and post request
 @app.route('/post/new/', methods=['GET','POST'])
 def newPost():
@@ -40,17 +41,20 @@ def newPost():
     else:
         return render_template('newpost.html')
 
+
 @app.route('/post/<int:post_id>/')
 def viewPost(post_id):
     # selects passed in post and renders template
     post = session.query(Posts).filter_by(id=post_id).one()
     return render_template('viewpost.html', post=post)
 
+
 @app.route('/post/<int:post_id>/edit/', methods=['GET', 'POST'])
 def editPost(post_id):
     # selects passed in post and renders template
     editedPost = session.query(Posts).filter_by(id=post_id).one()
     if request.method == 'POST':
+        # checks every form POST if one is not changed it wont be modified from original file.
         if request.form['title']:
             editedPost.title = request.form['title']
         if request.form['description']:
@@ -66,12 +70,18 @@ def editPost(post_id):
     else:
         return render_template('editpost.html', post=editedPost)
 
-@app.route('/post/<int:post_id>/delete/')
+
+@app.route('/post/<int:post_id>/delete/', methods=['GET', 'POST'])
 def deletePost(post_id):
     # selects passed in post and renders template
     post = session.query(Posts).filter_by(id=post_id).one()
-    flash("Delete successful!")
-    return render_template('deletepost.html', post=post, post_id=post_id)
+    if request.method == 'POST':
+        session.delete(post)
+        session.commit()
+        flash("Delete successful!")
+        return redirect(url_for('mainPage'))
+    else:
+        return render_template('deletepost.html', post=post, post_id=post_id)
 
 
 # wont work unless ran from this file
