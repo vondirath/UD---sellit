@@ -1,16 +1,50 @@
+# [BEGIN IMPORTS]
+# main app related
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
-app = Flask(__name__)
+# for image uploading import with pip install Flask-Uploads
+from flask_uploads import UploadSet, configure_uploads, IMAGES
+# database related
 from datetime import datetime
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sellitdata import Base, Posts, Questions
+#[END IMPORTS]
+
+app = Flask(__name__)
+
+# single collection of files declared
+photos = UploadSet('photos', IMAGES)
+# config showing where files are going to be saved
+app.config['UPLOADED_PHOTOS_DEST'] = 'static/upload/photos'
+# load config for upload set
+configure_uploads(app, photos)
 
 engine = create_engine('sqlite:///sellitdata.db')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
+
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    if request.method == 'POST' and 'photo' in request.files:
+        filename = photos.save(request.files['photo'])
+        #rec = Photo(filename=filename, user=g.user.id)
+        #rec.store()
+        #flash("Photo saved.")
+        #return redirect(url_for('show', id=rec.id))
+        return filename
+    return render_template('upload.html')
+
+@app.route('/photo/<id>')
+def show(id):
+    photo = Photo.load(id)
+    if photo is None:
+        abort(404)
+    url = photos.url(photo.filename)
+    return render_template('show.html', url=url, photo=photo)
 
 
 # main page route
@@ -42,9 +76,8 @@ def newPost():
         return render_template('newpost.html')
 
 
-@app.route('/post/<int:post_id>/')
+@app.route('/post/<int:post_id>/', methods=['GET', 'POST'])
 def viewPost(post_id):
-    # selects passed in post and renders template
     post = session.query(Posts).filter_by(id=post_id).one()
     return render_template('viewpost.html', post=post)
 
