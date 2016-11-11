@@ -2,30 +2,40 @@
 # main app related
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 # for image uploading
-from flask_uploads import UploadSet, configure_uploads, IMAGES, send_from_directory
+from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class, send_from_directory
+from werkzeug.utils import secure_filename
 # database related
 from datetime import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sellitdata import Base, Posts, Questions
 import os
+from uuid import uuid4
 #[END IMPORTS]
 
+# makes sure photos end with proper extension
+ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'png', 'webp'])
 
 app = Flask(__name__)
-
 # single collection of files declared
 photos = UploadSet('photos', IMAGES)
 # config showing where files are going to be saved
 app.config['UPLOADED_PHOTOS_DEST'] = 'static/upload/photos/'
+# limits uploaded files to 6mb
+patch_request_class(app, 6 * 1024 * 1024)
 # load config for upload set
 configure_uploads(app, photos)
 
-
+# says which database we are connecting to
 engine = create_engine('sqlite:///sellitdata.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 # helper to find a post
 def findpost(post):
@@ -36,7 +46,6 @@ def findpost(post):
 def photopath(post):
     path_to_find = os.path.join(app.config['UPLOADED_PHOTOS_DEST'], post.post_img_path)
     return path_to_find
-
 
 # helper for url_for in template
 @app.route('/static/upload/photos/<filename>')
@@ -49,7 +58,7 @@ def post_img(filename):
 @app.route('/main/')
 def mainPage():
     # will query posts so newest comes first
-    posts = session.query(Posts).order_by('time_created')
+    posts = session.query(Posts).order_by('time_created desc')
     return render_template('index.html', posts=posts )
 
 
@@ -57,23 +66,37 @@ def mainPage():
 @app.route('/post/new/', methods=['GET','POST'])
 def newPost():
     if request.method == 'POST' and 'photo' in request.files:
-        # photos is determined by app.config and save is a flask_uploads command
-        filename = photos.save(request.files['photo'])
-        # sets date to servers date
+        # requests photo
+        file = request.files['photo']
+        # makes sure file was selected
+        if file.filename == '':
+            flash('No selected image')
+            return redirect(request.url)
+        # grabs photo extension
+        ext = str(file.filename.rsplit(('.'), 1)[1])
+        # replaces file name with serialized version
+        file.filename = str(uuid4()) + '.' + ext
+        # default server time for database entry
         server_default = datetime.now()
-        newPost = Posts(
-                        title = request.form['title'],
-                        description = request.form['description'],
-                        price = request.form['price'],
-                        # saves filename
-                        post_img_path = str(filename),
-                        # sets date to server date
-                        time_created = server_default
-                        )
-        session.add(newPost)
-        session.commit()
-        flash("Posted new item!")
-        return redirect(url_for('mainPage'))
+        # makes sure file extension is allowed
+        if file and allowed_file(file.filename):
+            # returns a secure filename
+            filename = secure_filename(file.filename)
+            photos.save(file)
+            newPost = Posts(
+                            title = request.form['title'],
+                            description = request.form['description'],
+                            price = request.form['price'],
+                            post_img_path = str(filename),
+                            time_created = server_default
+                            )
+            session.add(newPost)
+            session.commit()
+            flash("Posted new item!")
+            return redirect(url_for('mainPage'))
+        else:
+            flash('Incorrect file format')
+            return redirect(request.url)
     else:
         return render_template('newpost.html')
 
@@ -108,19 +131,35 @@ def changePic(post_id):
     post = findpost(post_id)
     if request.method == 'POST' and 'photo' in request.files:
         old_file_path = photopath(post)
-        try:
-            os.remove(old_file_path)
-        except:
-            flash("Error replacing file")
-            redirect(url_for('mainPage'))
-        newfilename = photos.save(request.files['photo'])
-        post.post_img_path = str(newfilename)
-        session.add(post)
-        session.commit()
-        flash("Edit successful!")
-        return redirect(url_for('mainPage'))
+        file = request.files['photo']
+        if file.filename == '':
+            flash('No Selected Image')
+            return redirect(request.url)
+        # grabs photo extension
+        ext = str(file.filename.rsplit(('.'), 1)[1])
+        # replaces file name with serialized version
+        file.filename = str(uuid4()) + '.' + ext
+        # checks if extension is allowed
+        if file and allowed_file(file.filename):
+            # deletes old file if new file is allowed and secure
+            filename = secure_filename(file.filename)
+            try:
+                os.remove(old_file_path)
+            except:
+                flash("Error replacing file")
+                redirect(request.url)
+            photos.save(file)
+            post.post_img_path = str(filename)
+            session.add(post)
+            session.commit()
+            flash("Edit successful!")
+            return redirect(url_for('mainPage'))
+        else:
+            flash ('Incorrect Format')
+            return redirect(request.url)
     else:
         return render_template('editpic.html', post=post)
+
 
 @app.route('/post/<int:post_id>/delete/', methods=['GET', 'POST'])
 def deletePost(post_id):
