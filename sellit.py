@@ -1,15 +1,16 @@
 # [BEGIN IMPORTS]
 # main app related
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
-# for image uploading import with pip install Flask-Uploads
+# for image uploading
 from flask_uploads import UploadSet, configure_uploads, IMAGES, send_from_directory
 # database related
 from datetime import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sellitdata import Base, Posts, Questions
-#[END IMPORTS]
 import os
+#[END IMPORTS]
+
 
 app = Flask(__name__)
 
@@ -20,11 +21,27 @@ app.config['UPLOADED_PHOTOS_DEST'] = 'static/upload/photos/'
 # load config for upload set
 configure_uploads(app, photos)
 
+
 engine = create_engine('sqlite:///sellitdata.db')
 Base.metadata.bind = engine
-
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
+# helper to find a post
+def findpost(post):
+    post_to_find = session.query(Posts).filter_by(id=post).one()
+    return post_to_find
+
+# helper to find path of photo
+def photopath(post):
+    path_to_find = os.path.join(app.config['UPLOADED_PHOTOS_DEST'], post.post_img_path)
+    return path_to_find
+
+
+# helper for url_for in template
+@app.route('/static/upload/photos/<filename>')
+def post_img(filename):
+    return send_from_directory(app.config['UPLOADED_PHOTOS_DEST'], filename)
 
 
 # main page route
@@ -32,7 +49,7 @@ session = DBSession()
 @app.route('/main/')
 def mainPage():
     # will query posts so newest comes first
-    posts = session.query(Posts).order_by('time_created desc')
+    posts = session.query(Posts).order_by('time_created')
     return render_template('index.html', posts=posts )
 
 
@@ -42,6 +59,7 @@ def newPost():
     if request.method == 'POST' and 'photo' in request.files:
         # photos is determined by app.config and save is a flask_uploads command
         filename = photos.save(request.files['photo'])
+        # sets date to servers date
         server_default = datetime.now()
         newPost = Posts(
                         title = request.form['title'],
@@ -49,6 +67,7 @@ def newPost():
                         price = request.form['price'],
                         # saves filename
                         post_img_path = str(filename),
+                        # sets date to server date
                         time_created = server_default
                         )
         session.add(newPost)
@@ -58,21 +77,17 @@ def newPost():
     else:
         return render_template('newpost.html')
 
-# helper for url_for in template
-@app.route('/static/upload/photos/<filename>')
-def post_img(filename):
-        return send_from_directory(app.config['UPLOADED_PHOTOS_DEST'], filename)
 
 @app.route('/post/<int:post_id>/', methods=['GET', 'POST'])
 def viewPost(post_id):
-    post = session.query(Posts).filter_by(id=post_id).one()
+    post = findpost(post_id)
     return render_template('viewpost.html', post=post)
 
 
 @app.route('/post/<int:post_id>/edit/', methods=['GET', 'POST'])
 def editPost(post_id):
     # selects passed in post and renders template
-    editedPost = session.query(Posts).filter_by(id=post_id).one()
+    editedPost = findpost(post_id)
     if request.method == 'POST':
         # checks every form POST if one is not changed it wont be modified from original file.
         if request.form['title']:
@@ -88,19 +103,38 @@ def editPost(post_id):
     else:
         return render_template('editpost.html', post=editedPost)
 
+@app.route('/post/<int:post_id>/edit/changephoto', methods=['GET', 'POST'])
+def changePic(post_id):
+    post = findpost(post_id)
+    if request.method == 'POST' and 'photo' in request.files:
+        old_file_path = photopath(post)
+        try:
+            os.remove(old_file_path)
+        except:
+            flash("Error replacing file")
+            redirect(url_for('mainPage'))
+        newfilename = photos.save(request.files['photo'])
+        post.post_img_path = str(newfilename)
+        session.add(post)
+        session.commit()
+        flash("Edit successful!")
+        return redirect(url_for('mainPage'))
+    else:
+        return render_template('editpic.html', post=post)
 
 @app.route('/post/<int:post_id>/delete/', methods=['GET', 'POST'])
 def deletePost(post_id):
     # selects passed in post and renders template
-    post = session.query(Posts).filter_by(id=post_id).one()
+    post = findpost(post_id)
     if request.method == 'POST':
-        file_path = os.path.join(app.config['UPLOADED_PHOTOS_DEST'], post.post_img_path)
+        # sets image to be deleted
+        file_path = photopath(post)
         try:
             # uses os.remove to remove file
             os.remove(file_path)
         except:
             # if error during delete preserves post and returns to mainpage
-            flash("Error deleting image file")
+            flash("Error deleting image file or it is already deleted")
             redirect(url_for('mainPage'))
         session.delete(post)
         session.commit()

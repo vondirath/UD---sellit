@@ -5,7 +5,7 @@
 
 <h2> Edit Post </h2>
 <h2> {{ post.title }} </h2>
-    <form action= "{{url_for('editPost', post_id = post.id)}}" method = 'POST' enctype='multipart/form-data'>
+        <form action= "{{url_for('editPost', post_id = post.id)}}" method = 'POST' enctype='multipart/form-data'>
     <label> Title:
         <input type = 'text' size='30' name ='title' placeholder = '{{ post.title }}'>
     </label><br>
@@ -15,7 +15,7 @@
     <label> Price:
         <input type='text' size='30' name='price' placeholder='{{ post.price }}'>
     </label><br>
-    <input type='submit' value='Edit'>
+        <input type='submit' value='Edit'>
     </form>
-<a href= '{{url_for('viewPost', post_id=post.id)}}'>Cancel</a>
+    <a href= '{{url_for('viewPost', post_id=post.id)}}'>Cancel</a>
 {% endblock content %}
