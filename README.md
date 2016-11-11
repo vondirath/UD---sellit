@@ -7,12 +7,16 @@ image upload, comments between two people, posting by category and location.
 
 ### What do i need to run it?
 ---------------
+* Python 2.7 - https://www.python.org/
 * You will need a virtual server:
   * virtualbox - https://www.virtualbox.org/
-  * vangrat - https://www.vagrantup.com
+  * vangrant - https://www.vagrantup.com
+  * note: this is not necessary as you can run: python sellit.py
 * Your favorite command-line tool - https://www.gnu.org/software/bash/bash.html
+* latest version of pip (python installation package)
+    * can update in CommandLine with: pip install --upgrade pip
 * Flask - http://flask.pocoo.org/
-* Python 2.7 - https://www.python.org/
+* Flask_uploads - can download using command line with: pip install Flask-Uploads
 * a web browser - https://www.google.com/chrome/
 
 ### What is being utilized?
@@ -20,6 +24,7 @@ image upload, comments between two people, posting by category and location.
 * HTML/CSS/JavaScript
 * Python
 * Flask framework
+    * Flask-uploads
 * Jinja2 templating
 * sqlalchemy database
 * Vagrant VM
