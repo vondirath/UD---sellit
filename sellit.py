@@ -16,7 +16,7 @@ app = Flask(__name__)
 # single collection of files declared
 photos = UploadSet('photos', IMAGES)
 # config showing where files are going to be saved
-app.config['UPLOADED_PHOTOS_DEST'] = 'static/upload/photos'
+app.config['UPLOADED_PHOTOS_DEST'] = 'static/upload/photos/'
 # load config for upload set
 configure_uploads(app, photos)
 
@@ -25,15 +25,6 @@ Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
-
-
-@app.route('/photo/<id>')
-def show(id):
-    photo = Photo.load(id)
-    if photo is None:
-        abort(404)
-    url = photos.url(photo.filename)
-    return render_template('show.html', url=url, photo=photo)
 
 
 # main page route
@@ -49,12 +40,14 @@ def mainPage():
 @app.route('/post/new/', methods=['GET','POST'])
 def newPost():
     if request.method == 'POST' and 'photo' in request.files:
+        # photos is determined by app.config and save is a flask_uploads command
         filename = photos.save(request.files['photo'])
         server_default = datetime.now()
         newPost = Posts(
-                        title = request.form['title'], 
-                        description = request.form['description'], 
-                        price = request.form['price'], 
+                        title = request.form['title'],
+                        description = request.form['description'],
+                        price = request.form['price'],
+                        # saves filename
                         post_img_path = str(filename),
                         time_created = server_default
                         )
@@ -65,6 +58,7 @@ def newPost():
     else:
         return render_template('newpost.html')
 
+# helper for url_for in template
 @app.route('/static/upload/photos/<filename>')
 def post_img(filename):
         return send_from_directory(app.config['UPLOADED_PHOTOS_DEST'], filename)
@@ -85,18 +79,11 @@ def editPost(post_id):
             editedPost.title = request.form['title']
         if request.form['description']:
             editedPost.description = request.form['description']
-        if request.form['image']:
-            editedPost.post_img_path = request.form['image']
         if request.form['price']:
             editedPost.price = request.form['price']
-        # does not work yet
-        if request.form['photo']:
-            filename = post_id.post_img_path
-            os.remove('/static/upload/photos/%s') % filename
-            editedPost.post_img_path = str(filename)
         session.add(editedPost)
         session.commit()
-        flash("Edit successful!")
+        flash("Post edited!")
         return redirect(url_for('viewPost', post_id=post_id))
     else:
         return render_template('editpost.html', post=editedPost)
@@ -107,13 +94,20 @@ def deletePost(post_id):
     # selects passed in post and renders template
     post = session.query(Posts).filter_by(id=post_id).one()
     if request.method == 'POST':
+        file_path = os.path.join(app.config['UPLOADED_PHOTOS_DEST'], post.post_img_path)
+        try:
+            # uses os.remove to remove file
+            os.remove(file_path)
+        except:
+            # if error during delete preserves post and returns to mainpage
+            flash("Error deleting image file")
+            redirect(url_for('mainPage'))
         session.delete(post)
         session.commit()
         flash("Delete successful!")
         return redirect(url_for('mainPage'))
     else:
         return render_template('deletepost.html', post=post, post_id=post_id)
-
 
 # wont work unless ran from this file
 if __name__ == '__main__':
