@@ -4,12 +4,11 @@
 {# calls path of images and filename #}
 <img src="/static/upload/photos/{{post.post_img_path}}"/>
 <br>
-<a href='{{url_for('changePic', post_id=post.id) }}'>Change Post Picture</a>
+<a href='{{url_for('posts.changePic', post_id=post.id) }}'>Change Post Picture</a>
 <h1>{{ post.title }}</h1>
     <p> Created: {{ post.time_created }}</p>
     <p> Price: {{ post.price }} </p>
     <p> Description: {{ post.description }} </p>
-    <a href='{{ url_for("editPost", post_id=post.id) }}'>Edit </a>
-    <a href='{{ url_for("deletePost", post_id=post.id) }}'> Delete</a>
-
+    <a href='{{ url_for("posts.editPost", post_id=post.id) }}'>Edit </a>
+    <a href='{{ url_for("posts.deletePost", post_id=post.id) }}'> Delete</a>
 {% endblock content %}

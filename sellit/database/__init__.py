@@ -60,6 +60,7 @@ class Posts(Base):
 
 class Questions(Base):
     __tablename__='questions'
+
     poster_name = Column(String(30), nullable=False)
     id = Column(Integer, primary_key=True)
     question = Column(String(250))

@@ -1,25 +1,25 @@
-from flask_uploads import UploadSet, IMAGES, send_from_directory
+from flask_uploads import (IMAGES, UploadSet, send_from_directory,
+ patch_request_class, configure_uploads )
 from ..posts import posts
-
 from sellit.database import Posts, Base
-
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import (Flask, render_template, request, redirect,
+ url_for, flash, jsonify )
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from uuid import uuid4
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import os
+from sellit.helpers import PHOTO_DIR, ALLOWED_EXTENSIONS
 
 engine = create_engine('sqlite:///sellitdata.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'png', 'webp'])
-
-# single collection of files declared
 photos = UploadSet('photos', IMAGES)
+# config showing where files are going to be saved
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -30,10 +30,6 @@ def findpost(post):
     post_to_find = session.query(Posts).filter_by(id=post).one()
     return post_to_find
 
-# helper to find path of photo
-def photopath(post):
-    path_to_find = os.path.join(app.config['UPLOADED_PHOTOS_DEST'], post.post_img_path)
-    return path_to_find
 
 @posts.route('/')
 @posts.route('/main/')
@@ -82,7 +78,7 @@ def newPost():
             session.add(newPost)
             session.commit()
             flash("Posted new item!")
-            return redirect(url_for('mainPage'))
+            return redirect(url_for('posts.mainPage'))
         else:
             flash('Incorrect file format')
             return redirect(request.url)
@@ -128,7 +124,7 @@ def editPost(post_id):
 def changePic(post_id):
     post = findpost(post_id)
     if request.method == 'POST' and 'photo' in request.files:
-        old_file_path = photopath(post)
+        old_file_path = PHOTO_DIR + post.post_img_path
         file = request.files['photo']
         if file.filename == '':
             flash('No Selected Image')
@@ -151,7 +147,7 @@ def changePic(post_id):
             session.add(post)
             session.commit()
             flash("Edit successful!")
-            return redirect(url_for('mainPage'))
+            return redirect(url_for('posts.mainPage'))
         else:
             flash ('Incorrect Format')
             return redirect(request.url)
@@ -165,18 +161,18 @@ def deletePost(post_id):
     post = findpost(post_id)
     if request.method == 'POST':
         # sets image to be deleted
-        file_path = photopath(post)
+        file_path = PHOTO_DIR + post.post_img_path
         try:
             # uses os.remove to remove file
             os.remove(file_path)
         except:
             # if error during delete preserves post and returns to mainpage
             flash("Error deleting image file or it is already deleted")
-            redirect(url_for('mainPage'))
+            redirect(url_for('posts.mainPage'))
         session.delete(post)
         session.commit()
         flash("post Delete successful!")
-        return redirect(url_for('mainPage'))
+        return redirect(url_for('posts.mainPage'))
     else:
         return render_template('deletepost.html', post=post, post_id=post_id)
 

@@ -3,12 +3,12 @@
 {% block content %}
 
 <h1> Sellit! </h1>
-<a href="{{url_for('newPost')}}">Add a Listing!</a>
+<a href="{{url_for('posts.newPost')}}">Add a Listing!</a>
 <ul>
     {% for post in posts %}
     <li>
         {{ post.title }}<br>
-        <a href="{{url_for('viewPost', post_id=post.id)}}">View post!</a>
+        <a href="{{url_for('posts.viewPost', post_id=post.id)}}">View post!</a>
         <br>
         <img class="mainimg" src="/static/upload/photos/{{post.post_img_path}}" alt="Post Image"/>
         <br>
