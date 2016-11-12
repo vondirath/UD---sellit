@@ -1,5 +1,4 @@
-from flask_uploads import (IMAGES, UploadSet, send_from_directory,
- patch_request_class, configure_uploads )
+from flask_uploads import IMAGES, UploadSet, send_from_directory
 from ..posts import posts
 from sellit.database import Posts, Base
 from flask import (Flask, render_template, request, redirect,
@@ -18,7 +17,6 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 photos = UploadSet('photos', IMAGES)
-# config showing where files are going to be saved
 
 
 def allowed_file(filename):
@@ -29,6 +27,12 @@ def allowed_file(filename):
 def findpost(post):
     post_to_find = session.query(Posts).filter_by(id=post).one()
     return post_to_find
+
+# shows JSON list of posts
+@posts.route('/post/JSON')
+def postsJSON():
+    postlist = session.query(Posts).all()
+    return jsonify(Posts=[i.serialize for i in postlist])
 
 
 @posts.route('/')
@@ -61,8 +65,6 @@ def newPost():
         ext = str(file.filename.rsplit(('.'), 1)[1])
         # replaces file name with serialized version
         file.filename = str(uuid4()) + '.' + ext
-        # default server time for database entry
-        server_default = datetime.now()
         # makes sure file extension is allowed
         if file and allowed_file(file.filename):
             # returns a secure filename if it did not properly serialize
@@ -72,8 +74,8 @@ def newPost():
                             title = request.form['title'],
                             description = request.form['description'],
                             price = request.form['price'],
-                            post_img_path = str(filename),
-                            time_created = server_default
+                            post_img_path = filename,
+                            time_created = datetime.now()
                             )
             session.add(newPost)
             session.commit()
@@ -175,5 +177,3 @@ def deletePost(post_id):
         return redirect(url_for('posts.mainPage'))
     else:
         return render_template('deletepost.html', post=post, post_id=post_id)
-
-

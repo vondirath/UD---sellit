@@ -1,8 +1,4 @@
 # [BEGIN IMPORTS]
-import datetime
-import os
-# manipulate python runtime
-import sys
 # for mapper code
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
 # use in config and class
@@ -56,6 +52,18 @@ class Posts(Base):
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
     post_img_path = Column(String (80))
     price = Column(String(20))
+
+    @property
+    def serialize(self):
+        return {
+            'title' : self.title,
+            'description' : self.description,
+            'id' : self.id,
+            'created' : self.time_created,
+            'edited' : self.time_updated,
+            'img' : self.post_img_path,
+            'price' : self.price
+        }
 
 
 class Questions(Base):
