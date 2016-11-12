@@ -1,0 +1,26 @@
+{# template for creating a listing #}
+{% extends "base.html" %}
+{% block content %}
+
+<h2>New Listing:</h2>
+
+<form action="{{url_for('newPost')}}" method='post' enctype='multipart/form-data'>
+    <label>Title:
+        <input type='text' size = '30' name = 'title'>
+    </label>
+    <br>
+    <label>Description:<br>
+        <textarea name='description'></textarea>
+    </label>
+    <br>
+    <label>Price:
+        <input type='text' size='30' name='price'>
+    </label><br>
+    <label>Image:
+        <input type='file' name='photo'>
+    </label><br>
+    <input type='submit' value = 'Create'>
+</form>
+
+
+{% endblock content %}

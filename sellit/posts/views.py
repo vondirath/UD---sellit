@@ -1,6 +1,6 @@
 from flask_uploads import UploadSet, IMAGES, send_from_directory
+from ..posts import posts
 
-from sellit import app
 from sellit.database import Posts, Base
 
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
@@ -35,15 +35,15 @@ def photopath(post):
     path_to_find = os.path.join(app.config['UPLOADED_PHOTOS_DEST'], post.post_img_path)
     return path_to_find
 
-@app.route('/')
-@app.route('/main/')
+@posts.route('/')
+@posts.route('/main/')
 def mainPage():
     # will query posts so newest comes first
     posts = session.query(Posts).order_by('time_created desc')
     return render_template('index.html', posts=posts )
 
 # route includes get and post request
-@app.route('/post/new/', methods=['GET','POST'])
+@posts.route('/post/new/', methods=['GET','POST'])
 def newPost():
     if request.method == 'POST' and 'photo' in request.files:
         # requests photo
@@ -89,13 +89,13 @@ def newPost():
     else:
         return render_template('newpost.html')
 
-@app.route('/post/<int:post_id>/', methods=['GET', 'POST'])
+@posts.route('/post/<int:post_id>/', methods=['GET', 'POST'])
 def viewPost(post_id):
     post = findpost(post_id)
     return render_template('viewpost.html', post=post)
 
 
-@app.route('/post/<int:post_id>/edit/', methods=['GET', 'POST'])
+@posts.route('/post/<int:post_id>/edit/', methods=['GET', 'POST'])
 def editPost(post_id):
     # selects passed in post and renders template
     editedPost = findpost(post_id)
@@ -124,7 +124,7 @@ def editPost(post_id):
     else:
         return render_template('editpost.html', post=editedPost)
 
-@app.route('/post/<int:post_id>/edit/changephoto', methods=['GET', 'POST'])
+@posts.route('/post/<int:post_id>/edit/changephoto', methods=['GET', 'POST'])
 def changePic(post_id):
     post = findpost(post_id)
     if request.method == 'POST' and 'photo' in request.files:
@@ -159,7 +159,7 @@ def changePic(post_id):
         return render_template('editpic.html', post=post)
 
 
-@app.route('/post/<int:post_id>/delete/', methods=['GET', 'POST'])
+@posts.route('/post/<int:post_id>/delete/', methods=['GET', 'POST'])
 def deletePost(post_id):
     # selects passed in post and renders template
     post = findpost(post_id)
