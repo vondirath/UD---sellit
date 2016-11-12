@@ -72,6 +72,15 @@ def newPost():
         if file.filename == '':
             flash('No selected image')
             return redirect(request.url)
+        if request.form['title'].strip() == '':
+            flash('No title entered')
+            return redirect(request.url)
+        if request.form['description'].strip() == '':
+            flash('No description entered')
+            return redirect(request.url)
+        if request.form['price'].strip() == '':
+            flash('No price entered')
+            return redirect(request.url)
         # grabs photo extension
         ext = str(file.filename.rsplit(('.'), 1)[1])
         # replaces file name with serialized version
@@ -80,7 +89,7 @@ def newPost():
         server_default = datetime.now()
         # makes sure file extension is allowed
         if file and allowed_file(file.filename):
-            # returns a secure filename
+            # returns a secure filename if it did not properly serialize
             filename = secure_filename(file.filename)
             photos.save(file)
             newPost = Posts(
@@ -119,6 +128,16 @@ def editPost(post_id):
             editedPost.description = request.form['description']
         if request.form['price']:
             editedPost.price = request.form['price']
+        # makes sure incoming information is not empty.
+        if editedPost.title.strip() == '':
+            flash('No title entered')
+            return redirect(request.url)
+        if editedPost.description.strip() == '':
+            flash('No description entered')
+            return redirect(request.url)
+        if editedPost.price.strip() == '':
+            flash('No price entered')
+            return redirect(request.url)
         session.add(editedPost)
         session.commit()
         flash("Post edited!")
