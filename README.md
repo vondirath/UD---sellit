@@ -3,7 +3,8 @@
 ### What is it?
 ---------------
 This is an app intended to post items for sale based on location allowing  
-image upload, comments between two people, posting by category and location.
+secure image upload if a non production setting, comments between two people,  
+posting by category and location.  
 
 ### What do i need to run it?
 ---------------
@@ -11,7 +12,7 @@ image upload, comments between two people, posting by category and location.
 * You will need a virtual server:
   * virtualbox - https://www.virtualbox.org/
   * vangrant - https://www.vagrantup.com
-  * note: this is not necessary as you can run: python sellit.py
+  * note: this is not 100% necessary but recommended you can run: python runserver.py
 * Your favorite command-line tool - https://www.gnu.org/software/bash/bash.html
 * latest version of pip (python installation package)
     * can update in CommandLine with: pip install --upgrade pip
@@ -30,6 +31,12 @@ image upload, comments between two people, posting by category and location.
 * Vagrant VM
 * Virtualbox
 * a third party authorization and authentication
+
+### How do i run it?
+---------------
+Once everything is installed just move to directory in command line and  
+python runserver.py  
+the database will be made automatically as well as any additional folders.  
 
 ### Where is it available?
 ---------------
