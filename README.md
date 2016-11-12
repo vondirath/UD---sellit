@@ -2,7 +2,7 @@
 
 ### What is it?
 ---------------
-This is an app intended to post items for sale based on location allowing  
+This is a modular app intended to post items for sale based on location allowing  
 secure image upload if a non production setting, comments between two people,  
 posting by category and location.  
 
@@ -26,6 +26,7 @@ posting by category and location.
 * Python
 * Flask framework
     * Flask-uploads
+    * flask Blueprints
 * Jinja2 templating
 * sqlalchemy database
 * Vagrant VM
@@ -36,7 +37,8 @@ posting by category and location.
 ---------------
 Once everything is installed just move to directory in command line and  
 python runserver.py  
-the database will be made automatically as well as any additional folders.  
+the database will be made automatically as well as any additional folders.
+Note: If you are in a virtual server you will need to install necessary components.
 
 ### Where is it available?
 ---------------
