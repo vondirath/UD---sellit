@@ -1,15 +1,18 @@
 from flask_uploads import IMAGES, UploadSet, send_from_directory
 from ..posts import posts
-from sellit.database import Posts, Base
+from ..auth import auth
+from sellit.database import Posts, Base, User
 from flask import (Flask, render_template, request, redirect,
  url_for, flash, jsonify )
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, desc
 from sqlalchemy.orm import sessionmaker
 from uuid import uuid4
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import os
 from sellit.helpers import PHOTO_DIR, ALLOWED_EXTENSIONS
+# for log in checks
+from flask import session as login_session
 
 engine = create_engine('sqlite:///sellitdata.db')
 Base.metadata.bind = engine
@@ -18,7 +21,20 @@ session = DBSession()
 
 photos = UploadSet('photos', IMAGES)
 
+# checks zip input is an actual zip
+def checkZip(zipcode):
+    # if it cannot convert to integer it fails
+    try:
+        zipcode = int(zipcode)
+        # makes sure its the proper length
+        if len(str(abs(zipcode))) == 5:
+            return True
+        else:
+            return False
+    except:
+        return False
 
+# helter to determine if filename has correct extension
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
@@ -38,13 +54,20 @@ def postsJSON():
 @posts.route('/')
 @posts.route('/main/')
 def mainPage():
+    posts = session.query(Posts).order_by(desc('time_created'))
+    if 'username' not in login_session:
     # will query posts so newest comes first
-    posts = session.query(Posts).order_by('time_created desc')
-    return render_template('index.html', posts=posts )
+        return render_template('index.html', posts=posts)
+    else:
+        username = login_session['username']
+        return render_template('index.html', posts=posts, username=username)
+
 
 # route includes get and post request
 @posts.route('/post/new/', methods=['GET','POST'])
 def newPost():
+    if 'username' not in login_session:
+        return redirect('/auth/login')
     if request.method == 'POST' and 'photo' in request.files:
         # requests photo
         file = request.files['photo']
@@ -61,6 +84,11 @@ def newPost():
         if request.form['price'].strip() == '':
             flash('No price entered')
             return redirect(request.url)
+        if checkZip(request.form['zipcode']):
+            zipcode = str(abs(int(request.form['zipcode'])))
+        else:
+            flash("Invalid or no zip entered")
+            return redirect(request.url)
         # grabs photo extension
         ext = str(file.filename.rsplit(('.'), 1)[1])
         # replaces file name with serialized version
@@ -71,11 +99,13 @@ def newPost():
             filename = secure_filename(file.filename)
             photos.save(file)
             newPost = Posts(
-                            title = request.form['title'],
-                            description = request.form['description'],
-                            price = request.form['price'],
-                            post_img_path = filename,
-                            time_created = datetime.now()
+                            title=request.form['title'],
+                            description=request.form['description'],
+                            price=request.form['price'],
+                            img_name=filename,
+                            time_created=datetime.now(),
+                            user_id=login_session['user_id'],
+                            zipcode=zipcode
                             )
             session.add(newPost)
             session.commit()
@@ -89,14 +119,23 @@ def newPost():
 
 @posts.route('/post/<int:post_id>/', methods=['GET', 'POST'])
 def viewPost(post_id):
-    post = findpost(post_id)
-    return render_template('viewpost.html', post=post)
+    if 'username' not in login_session:
+        return redirect('/auth/login')
+    else:
+        post = findpost(post_id)
+        return render_template('viewpost.html', post=post)
 
 
 @posts.route('/post/<int:post_id>/edit/', methods=['GET', 'POST'])
 def editPost(post_id):
+    if 'username' not in login_session:
+        flash('Please log in')
+        return redirect('/auth/login')
     # selects passed in post and renders template
     editedPost = findpost(post_id)
+    if editedPost.user_id != login_session['user_id']:
+        flash('Unauthorized to edit post')
+        return redirect(url_for('posts.mainPage'))
     if request.method == 'POST':
         # checks every form POST if one is not changed it wont be modified from original file.
         if request.form['title']:
@@ -118,15 +157,23 @@ def editPost(post_id):
         session.add(editedPost)
         session.commit()
         flash("Post edited!")
-        return redirect(url_for('viewPost', post_id=post_id))
+        return redirect(url_for('posts.viewPost', post_id=post_id))
     else:
-        return render_template('editpost.html', post=editedPost)
+        if 'username' not in login_session:
+            return redirect('/auth/login')
+        else:
+            return render_template('editpost.html', post=editedPost)
 
 @posts.route('/post/<int:post_id>/edit/changephoto', methods=['GET', 'POST'])
 def changePic(post_id):
+    if 'username' not in login_session:
+        return redirect('/auth/login')
     post = findpost(post_id)
+    if post.user_id != login_session['user_id']:
+        flash('Unauthorized to change post.')
+        return redirect(url_for('posts.mainPage'))
     if request.method == 'POST' and 'photo' in request.files:
-        old_file_path = PHOTO_DIR + post.post_img_path
+        old_file_path = PHOTO_DIR + post.img_name
         file = request.files['photo']
         if file.filename == '':
             flash('No Selected Image')
@@ -145,7 +192,7 @@ def changePic(post_id):
                 flash("Error replacing file")
                 redirect(request.url)
             photos.save(file)
-            post.post_img_path = str(filename)
+            post.img_name = str(filename)
             session.add(post)
             session.commit()
             flash("Edit successful!")
@@ -154,16 +201,24 @@ def changePic(post_id):
             flash ('Incorrect Format')
             return redirect(request.url)
     else:
-        return render_template('editpic.html', post=post)
+        if 'username' not in login_session:
+            return redirect('/auth/login')
+        else:
+            return render_template('editpic.html', post=post)
 
 
 @posts.route('/post/<int:post_id>/delete/', methods=['GET', 'POST'])
 def deletePost(post_id):
     # selects passed in post and renders template
     post = findpost(post_id)
+    if 'username' not in login_session:
+        return redirect('/auth/login')
+    if post.user_id != login_session['user_id']:
+        flash('Unauthorized to change post.')
+        return redirect(url_for('posts.mainPage'))
     if request.method == 'POST':
         # sets image to be deleted
-        file_path = PHOTO_DIR + post.post_img_path
+        file_path = PHOTO_DIR + post.img_name
         try:
             # uses os.remove to remove file
             os.remove(file_path)
@@ -176,4 +231,7 @@ def deletePost(post_id):
         flash("post Delete successful!")
         return redirect(url_for('posts.mainPage'))
     else:
-        return render_template('deletepost.html', post=post, post_id=post_id)
+        if 'username' not in login_session:
+            return redirect('/auth/login')
+        else:
+            return render_template('deletepost.html', post=post, post_id=post_id)

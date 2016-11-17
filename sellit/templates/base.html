@@ -6,12 +6,22 @@
     <meta charset="UTF-8">
 
     <title> Sellit today! </title>
-    <link rel=stylesheet type=text/css href="{{url_for('static', filename='style.css') }}"
+    <link rel=stylesheet type=text/css href="{{url_for('static', filename='css/style.css') }}"/>
+    {# prereq for google sign in #}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="//apis.google.com/js/platform.js?onload=start"> </script>
+    <script src="{{url_for('static', filename='js/scripts.js')}} "></script>
 </head>
 <body>
     <h1> Sellit Menu </h1> 
+
+    <a href="{{url_for('auth.showLogin')}}"> Log In </a>  
+
+    <a href="{{url_for('auth.gdisconnect')}}"> Log Out </a> 
+
     <a href="{{url_for('posts.mainPage')}}">Home</a>
-    <p> <a href="#"> Log In</a> | <a href="#"> Sign Up</a></p>
+
+    
     <div> 
         {# add to css animate model, add info to cookie for temp storage? #}
         {% with messages = get_flashed_messages() %}
@@ -23,6 +33,7 @@
                 </ul>
             {% endif %}
         {% endwith %}
+        </div>
 
 {% block content %}
 {% endblock content %}

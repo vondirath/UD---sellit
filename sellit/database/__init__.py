@@ -1,16 +1,15 @@
 # [BEGIN IMPORTS]
 # for mapper code
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, create_engine
 # use in config and class
 from sqlalchemy.ext.declarative import declarative_base
 # for mapper
 from sqlalchemy.orm import relationship
-# use in config code
-from sqlalchemy import create_engine
 # for relationship table
 from sqlalchemy.schema import Table
 from sqlalchemy.sql import func
 # [END IMPORTS]
+
 
 # Lets sqlalchemy know that our classes are special sqlalchemy
 # classes that correspond to tables in database
@@ -23,22 +22,23 @@ association_table = Table('association', Base.metadata,
     Column('user_id', Integer, ForeignKey('user.id')),
     Column('posts_id', Integer, ForeignKey('posts.id'))
 )
+"""
 
-# questions association
 class User(Base):
     __tablename__='user'
 
-    # nullable if no name cant create
-    name = Column(String(20), nullable=False)
     id = Column(Integer, primary_key=True)
-    password = Column(String(80), nullable=False)
+    name = Column(String(250), nullable=False)
     email = Column(String(80), nullable=False)
-    location = Column(String(80), nullable=False)
-    # association table related. check if backref is necessary
-    posts = relationship("Posts",
-                    secondary=association_table,
-                    backref="users")
-"""
+    location = Column(String(80), nullable=True)
+    picture = Column(String(250))
+
+    @property
+    def serialize(self):
+        return {
+            'name': self.name,
+            'id': self.id,
+        }
 
 
 class Posts(Base):
@@ -50,8 +50,11 @@ class Posts(Base):
     # created datetime and updated/edited datetime function.
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
-    post_img_path = Column(String (80))
+    img_name = Column(String (80))
     price = Column(String(20))
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
+    zipcode = Column(String(5), nullable=False)
 
     @property
     def serialize(self):
@@ -61,10 +64,11 @@ class Posts(Base):
             'id' : self.id,
             'created' : self.time_created,
             'edited' : self.time_updated,
-            'img' : self.post_img_path,
+            'img' : self.img_name,
             'price' : self.price
         }
 
+"""
 
 class Questions(Base):
     __tablename__='questions'
@@ -74,8 +78,9 @@ class Questions(Base):
     question = Column(String(250))
     post_id = Column(Integer, ForeignKey('posts.id'))
     post = relationship(Posts)
-    time_created = Column(DateTime(timezone=True), server_default=func.now())  
-
+    time_created = Column(DateTime(timezone=True), server_default=func.now()) 
+ 
+"""
 # create a new file similar to a robust database
 engine = create_engine(
     'sqlite:///sellitdata.db')

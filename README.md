@@ -3,8 +3,8 @@
 ### What is it?
 ---------------
 This is a modular app intended to post items for sale based on location allowing  
-secure image upload if a non production setting, comments between two people,  
-posting by category and location.  
+secure image upload, comments between two people, posting by category and location,
+third party authentication and authorization. 
 
 ### What do i need to run it?
 ---------------
@@ -12,13 +12,16 @@ posting by category and location.
 * You will need a virtual server:
   * virtualbox - https://www.virtualbox.org/
   * vangrant - https://www.vagrantup.com
-  * note: this is not 100% necessary but recommended you can run: python runserver.py
+  * note: these are not 100% necessary but recommended. you can also run: python runserver.py
 * Your favorite command-line tool - https://www.gnu.org/software/bash/bash.html
 * latest version of pip (python installation package)
     * can update in CommandLine with: pip install --upgrade pip
 * Flask - http://flask.pocoo.org/
-* Flask_uploads - can download using command line with: pip install Flask-Uploads
+* Flask_uploads - can download using command line with: 
+    * pip install Flask-Uploads
 * a web browser - https://www.google.com/chrome/
+* you need a google Client ID and Client Secret and put the clientID into the login.html template.
+* you need to download the JSON credentials (for offline) and put it in the top app folder. 
 
 ### What is being utilized?
 ---------------
@@ -27,16 +30,18 @@ posting by category and location.
 * Flask framework
     * Flask-uploads
     * flask Blueprints
+    * flask-login
+    * requests(apache style)
+* oauth2client for third party auth
 * Jinja2 templating
 * sqlalchemy database
 * Vagrant VM
 * Virtualbox
-* a third party authorization and authentication
 
 ### How do i run it?
 ---------------
 Once everything is installed just move to directory in command line and  
-python runserver.py  
+* python runserver.py  
 the database will be made automatically as well as any additional folders.
 Note: If you are in a virtual server you will need to install necessary components.
 

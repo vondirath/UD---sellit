@@ -2,13 +2,19 @@
 {% extends "base.html" %}
 {% block content %}
 {# calls path of images and filename #}
-<img src="/static/upload/photos/{{post.post_img_path}}"/>
+<img src="/static/upload/photos/{{post.img_name}}"/>
 <br>
 <a href='{{url_for('posts.changePic', post_id=post.id) }}'>Change Post Picture</a>
 <h1>{{ post.title }}</h1>
     <p> Created: {{ post.time_created }}</p>
+    <p> By: <a href='{{ url_for("auth.show_user", username=post.user.name) }}'>{{post.user.name}}</a></p>
     <p> Price: {{ post.price }} </p>
     <p> Description: {{ post.description }} </p>
-    <a href='{{ url_for("posts.editPost", post_id=post.id) }}'>Edit </a>
-    <a href='{{ url_for("posts.deletePost", post_id=post.id) }}'> Delete</a>
+    <a href='{{ url_for("posts.editPost", post_id=post.id) }}'>Edit</a>
+    <a href='{{ url_for("posts.deletePost", post_id=post.id) }}'>Delete</a>
+    <a href='{{ url_for("posts.mainPage")}}'>Go back</a>
+    <br>
+    <br>
+    Location:<br>
+    <img src="https://maps.googleapis.com/maps/api/staticmap?center={{post.zipcode}}&zoom=13&size=400x400"/>
 {% endblock content %}
