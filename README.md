@@ -21,6 +21,7 @@ third party authentication and authorization.
     * pip install Flask-Uploads
 * a web browser - https://www.google.com/chrome/
 * you need a google Client ID and Client Secret and put the clientID into the login.html template.
+** ( if its a temporary key it'll last about an hour )
 * you need to download the JSON credentials (for offline) and put it in the top app folder. 
 
 ### What is being utilized?

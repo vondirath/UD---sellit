@@ -1,25 +1,30 @@
+import os
+from datetime import datetime
+from uuid import uuid4
+
+from flask import session as login_session
+# for log in checks
+from flask import (Flask, flash, jsonify, redirect, render_template, request,
+                   url_for)
 from flask_uploads import IMAGES, UploadSet, send_from_directory
-from ..posts import posts
-from ..auth import auth
-from sellit.database import Posts, Base, User
-from flask import (Flask, render_template, request, redirect,
- url_for, flash, jsonify )
 from sqlalchemy import create_engine, desc
 from sqlalchemy.orm import sessionmaker
-from uuid import uuid4
-from datetime import datetime
 from werkzeug.utils import secure_filename
-import os
-from sellit.helpers import PHOTO_DIR, ALLOWED_EXTENSIONS
-# for log in checks
-from flask import session as login_session
+
+from sellit.database import Base, Posts, User
+from sellit.helpers import ALLOWED_EXTENSIONS, PHOTO_DIR
+
+from ..auth import auth
+from ..posts import posts
 
 engine = create_engine('sqlite:///sellitdata.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+
 photos = UploadSet('photos', IMAGES)
+
 
 # checks zip input is an actual zip
 def checkZip(zipcode):
@@ -34,15 +39,18 @@ def checkZip(zipcode):
     except:
         return False
 
+
 # helter to determine if filename has correct extension
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
+
 # helper to find a post
 def findpost(post):
     post_to_find = session.query(Posts).filter_by(id=post).one()
     return post_to_find
+
 
 # shows JSON list of posts
 @posts.route('/post/JSON')
@@ -55,16 +63,12 @@ def postsJSON():
 @posts.route('/main/')
 def mainPage():
     posts = session.query(Posts).order_by(desc('time_created'))
-    if 'username' not in login_session:
-    # will query posts so newest comes first
-        return render_template('index.html', posts=posts)
-    else:
-        username = login_session['username']
-        return render_template('index.html', posts=posts, username=username)
+    return render_template('index.html', posts=posts, login_session=login_session)
+
 
 
 # route includes get and post request
-@posts.route('/post/new/', methods=['GET','POST'])
+@posts.route('/post/new/', methods=['GET', 'POST'])
 def newPost():
     if 'username' not in login_session:
         return redirect('/auth/login')
@@ -87,7 +91,7 @@ def newPost():
         if checkZip(request.form['zipcode']):
             zipcode = str(abs(int(request.form['zipcode'])))
         else:
-            flash("Invalid or no zip entered")
+            flash("Invalid zip entered")
             return redirect(request.url)
         # grabs photo extension
         ext = str(file.filename.rsplit(('.'), 1)[1])
@@ -104,7 +108,7 @@ def newPost():
                             price=request.form['price'],
                             img_name=filename,
                             time_created=datetime.now(),
-                            user_id=login_session['user_id'],
+                            user_id=login_session['email'],
                             zipcode=zipcode
                             )
             session.add(newPost)
@@ -117,13 +121,14 @@ def newPost():
     else:
         return render_template('newpost.html')
 
+
 @posts.route('/post/<int:post_id>/', methods=['GET', 'POST'])
 def viewPost(post_id):
     if 'username' not in login_session:
         return redirect('/auth/login')
     else:
         post = findpost(post_id)
-        return render_template('viewpost.html', post=post)
+        return render_template('viewpost.html', post=post, login_session=login_session)
 
 
 @posts.route('/post/<int:post_id>/edit/', methods=['GET', 'POST'])
@@ -133,11 +138,11 @@ def editPost(post_id):
         return redirect('/auth/login')
     # selects passed in post and renders template
     editedPost = findpost(post_id)
-    if editedPost.user_id != login_session['user_id']:
+    if editedPost.user_id != login_session['email']:
         flash('Unauthorized to edit post')
         return redirect(url_for('posts.mainPage'))
     if request.method == 'POST':
-        # checks every form POST if one is not changed it wont be modified from original file.
+        # Form Checks
         if request.form['title']:
             editedPost.title = request.form['title']
         if request.form['description']:
@@ -164,12 +169,13 @@ def editPost(post_id):
         else:
             return render_template('editpost.html', post=editedPost)
 
+
 @posts.route('/post/<int:post_id>/edit/changephoto', methods=['GET', 'POST'])
 def changePic(post_id):
     if 'username' not in login_session:
         return redirect('/auth/login')
     post = findpost(post_id)
-    if post.user_id != login_session['user_id']:
+    if post.user_id != login_session['email']:
         flash('Unauthorized to change post.')
         return redirect(url_for('posts.mainPage'))
     if request.method == 'POST' and 'photo' in request.files:
@@ -198,7 +204,7 @@ def changePic(post_id):
             flash("Edit successful!")
             return redirect(url_for('posts.mainPage'))
         else:
-            flash ('Incorrect Format')
+            flash('Incorrect Format')
             return redirect(request.url)
     else:
         if 'username' not in login_session:
@@ -213,7 +219,7 @@ def deletePost(post_id):
     post = findpost(post_id)
     if 'username' not in login_session:
         return redirect('/auth/login')
-    if post.user_id != login_session['user_id']:
+    if post.user_id != login_session['email']:
         flash('Unauthorized to change post.')
         return redirect(url_for('posts.mainPage'))
     if request.method == 'POST':
@@ -234,4 +240,5 @@ def deletePost(post_id):
         if 'username' not in login_session:
             return redirect('/auth/login')
         else:
-            return render_template('deletepost.html', post=post, post_id=post_id)
+            return render_template('deletepost.html',
+                                   post=post, post_id=post_id)

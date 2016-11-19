@@ -6,5 +6,4 @@ if __name__ == "__main__":
     # reloads itself when code is changed
     app.debug = True
     # listens to all IP addresses for debugging
-    app.run(host='0.0.0.0', port = 9000)
-
+    app.run(host='0.0.0.0', port=9000)

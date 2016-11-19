@@ -1,0 +1,28 @@
+<header>
+        <div class="">
+            <h3 class=""> Sellit! </h3> 
+        </div>
+            <div class="">
+                <a href="{{url_for('posts.mainPage')}}">Home</a><br>
+                {% if 'username' not in session %}
+                <a href="{{url_for('auth.showLogin')}}">Log In</a>
+                {% else %}
+                <a href="{{url_for('auth.disconnect')}}">Log Out</a><br>
+                {% endif %}
+
+        </div>
+</header>
+<div class=>
+    <div> 
+        {# add to css animate model, add info to cookie for temp storage? #}
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                {% for message in messages %}
+                <li><strong>{{ message }}</strong></li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+</div>

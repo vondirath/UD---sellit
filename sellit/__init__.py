@@ -1,11 +1,11 @@
 # [BEGIN IMPORTS]
 from flask import Flask
-from flask_uploads import (patch_request_class, 
- configure_uploads, IMAGES, UploadSet )
+from flask_uploads import (patch_request_class,
+            configure_uploads, IMAGES, UploadSet)
 from posts import posts
 import os
 from auth import auth
-#[END IMPORTS]
+# [END IMPORTS]
 
 # defined app
 app = Flask(__name__, static_folder='static')
