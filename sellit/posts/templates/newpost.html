@@ -2,6 +2,7 @@
 {% extends "base.html" %}
 {% block content %}
 {% include "header.html" %}
+
 <h2>New Listing:</h2>
 
 <form action="{{url_for('posts.newPost')}}" method='post' enctype='multipart/form-data'>
@@ -19,7 +20,9 @@
     </label>
 
     <br>
+    {# placeholder for google API #}
     <label>Zipcode:
+
         <input type='integer' size='30' name='zipcode'>
     </label>
 

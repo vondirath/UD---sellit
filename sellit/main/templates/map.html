@@ -1,0 +1,15 @@
+{% extends "base.html" %} 
+{% block content %}
+
+
+<h1> Select a location! </h1>
+<form action="{{url_for('posts.mainPage', state=state)}}">
+<select>
+    {% for state in states %}
+    <option value="{{state}}" name="state">{{state}}</option>
+    {% endfor %}
+</select>
+<input type='submit' value="Submit">
+</form>
+
+{% endblock content %}

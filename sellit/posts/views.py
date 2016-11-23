@@ -26,7 +26,7 @@ session = DBSession()
 photos = UploadSet('photos', IMAGES)
 
 
-# checks zip input is an actual zip
+# checks zip input is an actual zip replace with google api when over https
 def checkZip(zipcode):
     # if it cannot convert to integer it fails
     try:
@@ -59,7 +59,7 @@ def postsJSON():
     return jsonify(Posts=[i.serialize for i in postlist])
 
 
-@posts.route('/')
+# @posts.route('/')
 @posts.route('/main/')
 def mainPage():
     posts = session.query(Posts).order_by(desc('time_created'))
@@ -88,6 +88,7 @@ def newPost():
         if request.form['price'].strip() == '':
             flash('No price entered')
             return redirect(request.url)
+        # replace zip with google api when over https
         if checkZip(request.form['zipcode']):
             zipcode = str(abs(int(request.form['zipcode'])))
         else:
@@ -122,7 +123,7 @@ def newPost():
         return render_template('newpost.html')
 
 
-@posts.route('/post/<int:post_id>/', methods=['GET', 'POST'])
+@posts.route('/post/<int:post_id>/', methods=['GET'])
 def viewPost(post_id):
     if 'username' not in login_session:
         return redirect('/auth/login')

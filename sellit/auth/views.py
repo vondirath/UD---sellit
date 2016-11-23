@@ -12,7 +12,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from sellit.database import Base, Posts, User
-# internal app imports
+
 from ..auth import auth
 from ..posts import posts
 

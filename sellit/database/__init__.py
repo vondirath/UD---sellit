@@ -16,14 +16,11 @@ from sqlalchemy.sql import func
 # classes that correspond to tables in database
 Base = declarative_base()
 
-# implement later on? associate posts to comments first
-"""
-# locate remote tables posts belong to users (for ease of deletion)
-association_table = Table('association', Base.metadata,
-    Column('user_id', Integer, ForeignKey('user.id')),
-    Column('posts_id', Integer, ForeignKey('posts.id'))
-)
-"""
+
+class State(Base):
+    __tablename__ = 'state'
+    id = Column(Integer, primary_key = True)
+    name = Column(String(20), nullable=False)
 
 
 class User(Base):
@@ -32,7 +29,6 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
     email = Column(String(80), nullable=False)
-    location = Column(String(80), nullable=True)
     picture = Column(String(250))
 
     @property
@@ -56,7 +52,8 @@ class Posts(Base):
     price = Column(String(20))
     user_id = Column(String, ForeignKey('user.email'))
     user = relationship(User)
-    zipcode = Column(String(5), nullable=False)
+    # update using google API when over https
+    zipcode = Column(String(80), nullable=True)
 
     @property
     def serialize(self):
@@ -69,6 +66,7 @@ class Posts(Base):
             'img': self.img_name,
             'price': self.price
         }
+
 
 """
 

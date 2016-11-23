@@ -1,8 +1,294 @@
+/*
+Full App page/ universal
+*/
 body {
-    background-color: papayawhip;
+    font-family: sans-serif;
+    background: #D9D2D0;
+    color: #D9D2D0;
 }
 
-.mainimg {
-    height: 200px;
-    width: 200px;
+
+.siteheader {
+    z-index: 99;
 }
+
+/*
+This is the Login section
+*/
+
+.loginbody {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-size: cover;
+    background-position: 50% 50%;
+    background: #241D1B;
+}
+
+.loginbody .container {
+    height: 300px;
+}
+
+.box-signin {
+    max-width: 280px;
+    padding: 15px;
+    margin: 0 auto;
+    margin-top: 25px;
+    background: #D9D2D0;
+    box-shadow: 0 0 1px 1px #241D1B;
+    height: 250px;
+}
+
+.login-heading {
+    color: #241D1B;
+    text-align: left;
+}
+
+/*
+end Login section
+*/
+
+/*
+This section is for the splash page
+*/
+
+.jumbopic, picture {
+    min-height: 100%;
+    min-width: 1024px;
+    height: auto;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    border: 0;
+}
+
+picture {
+    z-index: 0;
+}
+
+.jumbotron {
+    /*background: url(/static/images/whitemed.jpeg) no-repeat center center fixed;*/
+    height: 60em;
+    text-align: center;
+    margin-bottom: 0px;
+    z-index: 1;
+    position: relative;
+    background-color: transparent;
+    
+}
+.jumbotron p {
+    font-size: 5em;
+    margin-top: 1.5em;
+    color: #F4F2F4;
+    text-shadow: 2px 2px #241D1B;
+}
+.jumbotron .subheadsplash {
+    color: #F4F2F4;
+    font-size: 2em;
+}
+
+.line {
+    border-top: 1px solid #D9D2D0;
+    width: 20em;
+    margin: auto;
+    padding: 10px;
+}
+
+.loginlink {
+    font-size: 4em;
+}
+
+.btn-primary,
+.arrow {
+    color: #F4F2F4;
+    background-color: #585658;
+    border-color: #585658;
+    margin-top: 3em;
+    box-shadow: 1px 1px 1px #A6A6A8;
+}
+
+.btn-primary:hover, 
+.arrow:hover {
+    background-color: #241D1B;
+    border-color: #585658;
+    color: #D9D2D0;
+    box-shadow: 1px 1px 1px #241D1B;
+}
+
+.splashrow {
+    margin-left: 0px;
+    margin-right: 0px;
+    height: 60em;
+    background: #241D1B;
+    position: relative;
+    z-index: 2;
+}
+
+
+/*
+
+    transition: margin-top 2s;
+.splashrow:hover {
+    margin-top: 50px;
+}
+*/
+.arrow {
+    border: 1px solid;
+    border-radius: 50%;
+    margin-top: 15%;
+}
+
+.clearborder {
+    background-color: transparent;
+    font-size: 25px;
+    color: #585658;
+}
+
+.cont1,
+.cont2 {
+    position: relative;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.cont1 {
+    background-image: url("/static/images/antiquemed.jpeg");
+    min-height: 400px;
+}
+
+.cont2 {
+    background-image: url("/static/images/booksmed.jpeg");
+    min-height: 400px;
+}
+
+.empty {
+    position: relative;
+}
+
+.solid {
+    background-color: #241D1B;
+    font-size: 3em;
+    padding: 50px 80px;
+    z-index: 2;
+    position: relative;
+    color: #A6A6A8;
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    .jumbotron p {
+        font-size: 2.5em;
+    }
+    .jumbotron .subheadsplash {
+        font-size: 1.5em;
+    }
+    .loginlink {
+        font-size: 2em;
+    }
+    .solid {
+        font-size: 2em;
+    }
+}
+/* end of splash page */
+
+/*
+post css on main page
+*/
+
+.dlr {
+    float: right;
+}
+
+.rwrapper {
+    padding: 5px;
+}
+
+.rlisting {
+    background-color: #F4F2F4;
+    overflow: hidden;
+    color: #241D1B;
+    border-radius: 15px;
+}
+
+.rlisting img {
+    width: 100%;
+}
+
+.nopad {
+    padding:0;
+}
+
+.rlisting a,
+.rlisting p,
+.rlisting i {
+    padding: 0;
+    margin: 5px;
+    position: relative;
+    font-weight: 800;
+    color: #241D1B;
+
+}
+
+.viewpostbtn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 5px;
+}
+
+.datetimemain {
+    margin: 5px;
+}
+
+.post-img {
+    margin-top: -20px;
+}
+
+.post-img:hover {
+    opacity: 0.65;
+}
+
+@media (min-width: 1200px) {
+    .post-img {
+        max-height: 200px;
+        overflow: hidden;
+    }
+    .dlr {
+        margin-top: 10px;
+    }
+}
+@media (max-width: 1199px) {
+    .post-img {
+        max-height: 170px;
+        width: auto;
+    }
+    .dlr {
+        margin-top: 10px;
+    }
+}
+@media (max-width: 991px) {
+    .post-img {
+        max-height: 230px;
+    }
+}
+@media (max-width: 767px) {
+    .post-img {
+        max-height: 100%;
+    }
+    .rlisting {
+        height: 100%;
+    }
+}
+/* end posts on main page */
+/* for post view */
+
+
+
+
+
+/* end post view */
