@@ -2,20 +2,25 @@
 {% extends "base.html" %}
 {% block content %}
 {% include "header.html" %}
-
-<h2> Edit Post </h2>
-<h2> {{ post.title }} </h2>
-        <form action= "{{url_for('posts.editPost', post_id = post.id)}}" method = 'POST' enctype='multipart/form-data'>
-    <label> Title:
-        <input type = 'text' size='30' name ='title' placeholder = '{{ post.title }}'>
-    </label><br>
-    <label> Description:
-        <input type = 'text' size='30' name='description' placeholder = '{{ post.description }}'>
-    </label><br>
-    <label> Price:
-        <input type='text' size='30' name='price' placeholder='{{ post.price }}'>
-    </label><br>
-        <input type='submit' value='Edit'>
-    </form>
-    <a href= '{{url_for('posts.viewPost', post_id=post.id)}}'>Cancel</a>
+<div class="container viewbody">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="well">
+            <h2> Edit Post </h2>
+            <h2> {{ post.title }} </h2>
+            <form action="{{url_for('posts.editPost', post_id = post.id)}}" method='POST' enctype='multipart/form-data'>
+                <div class="form-group">
+                    <input type='text' size='30' name='title' placeholder='{{ post.title }}'>
+                </div><br>
+                <div class="form-group">
+                    <input type='text' size='30' name='description' placeholder='{{ post.description }}'>
+                </div><br>
+                <div class="form-group">
+                    <input type='text' size='30' name='price' placeholder='{{ post.price }}'>
+                </div><br>
+                <input type='submit' value='Edit' class="btn btn-default">
+            </form>
+            <a style="float: right; margin-top: -33px;" href='{{url_for("posts.viewPost", post_id=post.id)}}' class="btn btn-default">Cancel</a>
+        </div>
+    </div>
+</div>
 {% endblock content %}

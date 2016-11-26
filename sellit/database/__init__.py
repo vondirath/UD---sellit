@@ -17,12 +17,6 @@ from sqlalchemy.sql import func
 Base = declarative_base()
 
 
-class State(Base):
-    __tablename__ = 'state'
-    id = Column(Integer, primary_key = True)
-    name = Column(String(20), nullable=False)
-
-
 class User(Base):
     __tablename__ = 'user'
 
@@ -30,6 +24,22 @@ class User(Base):
     name = Column(String(250), nullable=False)
     email = Column(String(80), nullable=False)
     picture = Column(String(250))
+
+    @property
+    def serialize(self):
+        return {
+            'name': self.name,
+            'id': self.id,
+        }
+
+
+class Store(Base):
+    __tablename__ = 'store'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(20), nullable=False)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
 
     @property
     def serialize(self):
@@ -50,10 +60,12 @@ class Posts(Base):
     time_updated = Column(DateTime(timezone=True), onupdate=func.now())
     img_name = Column(String(80))
     price = Column(String(20))
-    user_id = Column(String, ForeignKey('user.email'))
+    user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
     # update using google API when over https
     zipcode = Column(String(80), nullable=True)
+    store_id = Column(Integer, ForeignKey('store.id'))
+    store = relationship(Store)
 
     @property
     def serialize(self):
@@ -66,20 +78,6 @@ class Posts(Base):
             'img': self.img_name,
             'price': self.price
         }
-
-
-"""
-
-class Questions(Base):
-    __tablename__='questions'
-
-    poster_name = Column(String(30), nullable=False)
-    id = Column(Integer, primary_key=True)
-    question = Column(String(250))
-    post_id = Column(Integer, ForeignKey('posts.id'))
-    post = relationship(Posts)
-    time_created = Column(DateTime(timezone=True), server_default=func.now())
-"""
 
 
 # create a new file similar to a robust database

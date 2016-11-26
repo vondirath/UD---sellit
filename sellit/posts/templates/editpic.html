@@ -2,13 +2,17 @@
 {% extends "base.html" %}
 {% block content %}
 {% include "header.html" %}
-
-<h2> Edit Picture </h2>
-<h2> {{ post.title }} </h2>
-    <form action= "{{url_for('posts.changePic', post_id = post.id)}}" method = 'POST' enctype='multipart/form-data'>
-    <input type='file' name='photo'>
-    <input type='submit' value='Edit'>
-    </form>
-    <a href= '{{url_for('posts.viewPost', post_id=post.id)}}'>Cancel</a>
-
+<div class="container viewbody">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="well">
+            <h2> Edit Picture </h2>
+            <h2> {{ post.title }} </h2>
+            <form action="{{url_for('posts.changePic', post_id = post.id)}}" method='POST' enctype='multipart/form-data'>
+                <input type='file' name='photo'>
+                <input type='submit' value='Edit' class="btn btn-default">
+            </form>
+            <a style=" float: right; margin-top: -33px; " href='{{url_for("posts.viewPost", post_id=post.id)}}' class="btn btn-default">Cancel</a>
+        </div>
+    </div>
+</div>
 {% endblock content %}

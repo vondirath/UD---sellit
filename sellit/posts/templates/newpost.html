@@ -2,37 +2,29 @@
 {% extends "base.html" %}
 {% block content %}
 {% include "header.html" %}
+<div class="container viewbody">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="well">
+            <h2>New Listing:</h2>
+            <form action="#" method='post' enctype='multipart/form-data'>
+                <div class="form-group">
+                    <input type='text' size='30' name='title' placeholder="Title:">
+                </div>
+                <textarea name='description' placeholder="Description:" size="60"></textarea>
 
-<h2>New Listing:</h2>
-
-<form action="{{url_for('posts.newPost')}}" method='post' enctype='multipart/form-data'>
-    <label>Title:
-        <input type='text' size = '30' name = 'title'>
-    </label>
-    <br>
-    <label>Description:<br>
-        <textarea name='description'></textarea>
-    </label>
-
-    <br>
-    <label>Price:
-        <input type='text' size='30' name='price'>
-    </label>
-
-    <br>
-    {# placeholder for google API #}
-    <label>Zipcode:
-
-        <input type='integer' size='30' name='zipcode'>
-    </label>
-
-    <br>
-
-    <label>Image:
-        <input type='file' name='photo'>
-    </label><br>
-    <input type='submit' value = 'Create'>
-</form>
-
-
+                <div class="form-group">
+                    <input type='text' size='30' name='price' placeholder="Price:">
+                </div>
+                <div class="form-group">
+                    <input type='integer' size='30' name='zipcode' placeholder="Zipcode:">
+                </div>
+                <label>Image:
+                <input type='file' name='photo'>
+                </label>
+                <br>
+                <input type='submit' value='Create' class="btn btn-default">
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock content %}

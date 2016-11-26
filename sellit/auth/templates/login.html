@@ -7,21 +7,16 @@
 <div class="container">
   <div class="box-signin">
 <h3 class="login-heading text-muted">Login!</h3>
-
           <div class="g-signin"
             data-width="230"
             data-scope="openid email"
-            data-clientid=""
+            data-clientid="ENTER ID HERE"
             data-redirecturi="postmessage"
             data-accesstype="offline"
             data-cookiepolicy="single_host_origin"
             data-callback="signInCallback"
             data-approvalprompt="force">
           </div><br>
-
-
-
-
 <script>function signInCallback(authResult) {
         if (authResult['code']) {
     // Hide the sign-in button now that the user is authorized
@@ -103,14 +98,17 @@
     });
   }
 </script>
-
 <div scope="public_profile,email" onlogin="sendTokenToServer();" class="fb-login-button" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false">
   Facebook Login
 </div>
-<a class="btn btn-primary" href="{{url_for('main.welcomePage')}}">Cancel</a>
+<br><br>
+<a class="btn btn-primary" href="{{url_for('posts.welcomePage')}}">Cancel</a>
 <div id="result"></div>
 </div>
 </div>
 </div>
+<style>
+.container {width: 100%; border-radius: 0px;}
+</style>
 <!-- END FACEBOOK SIGN IN -->
 {% endblock content %}

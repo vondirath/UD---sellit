@@ -1,24 +1,16 @@
-{# template for viewing a User and his listings #}
+{# template for viewing a post #} 
 {% extends "base.html" %}
 {% block content %}
 {% include "header.html" %}
 <div class="container">
-<div class="well well-sm">
-    <h2>What {{ user.name }} is selling!</h2>
-    <a style="float: right; margin-top: -33px;" class="btn btn-default" href='{{ url_for("posts.mainPage")}}'>Go back</a>
-</div>
-</div>
-<div class="container"><!--Top of posts -->
-<div class="row"><!--posts-list-->
-<div class="col-md-3">
-    <div class="sidebar">
     <div class="row">
-        <div class="sidebar-thumbnail">
-            <img class="img-responsive" src="{{user.picture}}"/>
+        <div class="col-md-3">
+        <p class="text-center">
+            <a class="btn btn-default text-center" href="{{url_for('posts.newPost', store_id=store.id)}}">Add a Listing!</a>
+        </p>
         </div>
-    </div>
-    </div>
-</div>
+        <div class="col-md-9">
+        <h1>Welcome to {{store.name}}!</h1><h5>by {{store.user.name}}</h5>
      {% for post in posts %}
     <div class="col-xs-12 col-sm-6 col-md-3 rwrapper">
      <div class="rlisting">
@@ -44,6 +36,14 @@
         {# default block  dont end div's in an else #}
         No posts entered yet!
     {% endfor %}
-</div><!--posts-list-->
+        </div>
+        </div>
+            <div class="btn-group viewpostbtngrp well-sm pull-right">
+            {% if store.user_id == login_session['user_id'] %}
+            <a class="btn btn-default" href='{{ url_for("posts.deleteStore", store_id=store.id) }}'>Delete</a>
+            <a class="btn btn-default" href='{{ url_for("posts.editStore", store_id=store.id) }}'>Edit</a>
+            {% endif %}
+                <a class="btn btn-default" href='{{ url_for("posts.mainPage")}}'>Go back</a></li>
+            </div>
 </div>
 {% endblock content %}

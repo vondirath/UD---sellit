@@ -1,23 +1,75 @@
 /*
 Full App page/ universal
 */
-body {
+
+html, body {
     font-family: sans-serif;
     background: #D9D2D0;
-    color: #D9D2D0;
 }
+
+li {
+    list-style: none;
+}
+
+/* 
+sidebar
+ */
+
+.sidebar {
+    height: 500px;
+    width: 100%;
+    background: #241D1B;
+    margin-right: 10px;
+    border-radius: 25px;
+    padding: 20px;
+}
+
+.sidebar-thumbnail img {
+    border-radius: 50%;
+    max-height: 150px;
+    max-width: 150px;
+}
+
+/* 
+end sidebar 
+*/
+
+/* 
+start header 
+*/
 
 
 .siteheader {
+    background-color: #241D1B;
+    border-radius: 15px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.alertmain {
+    border-radius: 15px;
+    width: 50%;
+    position: absolute;
+    margin-top: 0px;
     z-index: 99;
 }
+
+
+/* 
+end header
+ */
+
 
 /*
 This is the Login section
 */
 
+#result {
+    background: #D9D2D0;
+}
+
 .loginbody {
-    position: fixed;
+    position: relative;
     top: 0;
     right: 0;
     bottom: 0;
@@ -25,6 +77,15 @@ This is the Login section
     background-size: cover;
     background-position: 50% 50%;
     background: #241D1B;
+    height: 500px;
+    margin-bottom: -20px;
+    border-radius: 15px;
+}
+
+@media (min-height: 500px) {
+    .loginbody {
+        height: 800px;
+    }
 }
 
 .loginbody .container {
@@ -46,9 +107,11 @@ This is the Login section
     text-align: left;
 }
 
+
 /*
 end Login section
 */
+
 
 /*
 This section is for the splash page
@@ -70,21 +133,21 @@ picture {
 }
 
 .jumbotron {
-    /*background: url(/static/images/whitemed.jpeg) no-repeat center center fixed;*/
     height: 60em;
     text-align: center;
     margin-bottom: 0px;
     z-index: 1;
     position: relative;
     background-color: transparent;
-    
 }
+
 .jumbotron p {
     font-size: 5em;
     margin-top: 1.5em;
     color: #F4F2F4;
     text-shadow: 2px 2px #241D1B;
 }
+
 .jumbotron .subheadsplash {
     color: #F4F2F4;
     font-size: 2em;
@@ -101,8 +164,7 @@ picture {
     font-size: 4em;
 }
 
-.btn-primary,
-.arrow {
+.btn-primary .arrow, .loginlink {
     color: #F4F2F4;
     background-color: #585658;
     border-color: #585658;
@@ -110,8 +172,7 @@ picture {
     box-shadow: 1px 1px 1px #A6A6A8;
 }
 
-.btn-primary:hover, 
-.arrow:hover {
+.btn-primary:hover, .arrow:hover {
     background-color: #241D1B;
     border-color: #585658;
     color: #D9D2D0;
@@ -124,17 +185,9 @@ picture {
     height: 60em;
     background: #241D1B;
     position: relative;
-    z-index: 2;
+    z-index: 1;
 }
 
-
-/*
-
-    transition: margin-top 2s;
-.splashrow:hover {
-    margin-top: 50px;
-}
-*/
 .arrow {
     border: 1px solid;
     border-radius: 50%;
@@ -147,8 +200,7 @@ picture {
     color: #585658;
 }
 
-.cont1,
-.cont2 {
+.cont1, .cont2 {
     position: relative;
     background-attachment: fixed;
     background-position: center;
@@ -194,7 +246,11 @@ picture {
         font-size: 2em;
     }
 }
-/* end of splash page */
+
+
+/* 
+end of splash page 
+*/
 
 /*
 post css on main page
@@ -220,18 +276,15 @@ post css on main page
 }
 
 .nopad {
-    padding:0;
+    padding: 0;
 }
 
-.rlisting a,
-.rlisting p,
-.rlisting i {
+.rlisting a, .rlisting p, .rlisting i {
     padding: 0;
     margin: 5px;
     position: relative;
     font-weight: 800;
     color: #241D1B;
-
 }
 
 .viewpostbtn {
@@ -262,6 +315,7 @@ post css on main page
         margin-top: 10px;
     }
 }
+
 @media (max-width: 1199px) {
     .post-img {
         max-height: 170px;
@@ -271,11 +325,13 @@ post css on main page
         margin-top: 10px;
     }
 }
+
 @media (max-width: 991px) {
     .post-img {
         max-height: 230px;
     }
 }
+
 @media (max-width: 767px) {
     .post-img {
         max-height: 100%;
@@ -284,11 +340,136 @@ post css on main page
         height: 100%;
     }
 }
-/* end posts on main page */
-/* for post view */
 
 
+/* 
+end posts on main page
+ */
 
 
+/* 
+for post view
+ */
 
-/* end post view */
+.thumbnail img {
+    max-width: 500px;
+    width: 100%;
+    height: auto;
+}
+
+.viewpostbtngrp {
+    margin-top: -20px;
+}
+
+.well {
+    border-radius: 15px;
+    background-color: #F4F2F4;
+}
+
+.thumbnail {
+    border-radius: 15px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.viewbody {
+    height: 400px;
+}
+
+@media (min-height: 500px) {
+    .viewbody {
+        height: 700px;
+    }
+}
+
+
+/* 
+end post view
+ */
+
+/* 
+new post start
+ */
+
+.red {
+    color: red;
+}
+
+.form-area {
+    background-color: #FAFAFA;
+    padding: 10px 40px 60px;
+    margin: 10px 0px 60px;
+    border: 1px solid GREY;
+}
+
+textarea {
+    width: 222px;
+}
+
+
+/* 
+new post 
+end */
+
+
+/* 
+footer 
+*/
+
+.social:hover {
+    -webkit-transform: scale(1.1);
+    -moz-transform: scale(1.1);
+    -o-transform: scale(1.1);
+}
+
+.social {
+    -webkit-transform: scale(0.8);
+    -moz-transform: scale(0.8);
+    -o-transform: scale(0.8);
+    -webkit-transition-duration: 0.5s;
+    -moz-transition-duration: 0.5s;
+    -o-transition-duration: 0.5s;
+}
+
+#social-fb:hover {
+    color: #3B5998;
+}
+
+#social-tw:hover {
+    color: #4099FF;
+}
+
+#social-gp:hover {
+    color: #d34836;
+}
+
+#social-pin:hover {
+    color: #cb2027;
+}
+
+#social-lin:hover {
+    color: #007bb5;
+}
+
+#social-ins:hover {
+    color: #125688;
+}
+
+#social-m:hover {
+    color: #3cb371;
+}
+
+#social-reb:hover {
+    color: #350608;
+}
+
+footer {
+    background: #241D1B;
+    color: #F4F2F4;
+    border-radius: 25px;
+    z-index: 10;
+    position: relative;
+    margin-top: 15px;
+}
+
+/* end footer */

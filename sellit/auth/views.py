@@ -27,8 +27,8 @@ session = DBSession()
 
 @auth.route('/user/<username>')
 def show_user(username):
-    user = session.query(User).filter_by(email=username).one()
-    posts = session.query(Posts).filter_by(user_id=user.email).all()
+    user = session.query(User).filter_by(id=username).one()
+    posts = session.query(Posts).filter_by(user_id=user.id).all()
     return render_template('show_user.html', user=user, posts=posts)
 
 
@@ -50,6 +50,7 @@ def getUserID(email):
         return None
 
 
+@auth.route('/')
 @auth.route('/login')
 def showLogin():
     if 'username' in login_session:
@@ -85,7 +86,6 @@ def fbconnect():
     # strip expire tag from access token
     token = result.split("&")[0]
 
-
     url = 'https://graph.facebook.com/v2.4/me?%s&fields=name,id,email' % token
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
@@ -97,7 +97,7 @@ def fbconnect():
     login_session['email'] = data["email"]
     login_session['facebook_id'] = data["id"]
 
-    # token stored in the login_session strip out the information before the equals sign in our token
+    # token in the login_session strip out the information before the equals
     stored_token = token.split("=")[1]
     login_session['access_token'] = stored_token
 
@@ -137,6 +137,7 @@ def fbdisconnect():
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
     return "you have been logged out"
+
 
 @auth.route('/gconnect', methods=['POST'])
 def gconnect():
@@ -223,7 +224,7 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;">'
+    output += ' " style = "width: 150px; height: 150px;border-radius: 150px;">'
     flash("you are now logged in as %s" % login_session['username'])
     return output
 

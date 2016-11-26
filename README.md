@@ -2,8 +2,8 @@
 
 ### What is it?
 ---------------
-This is a modular app intended to post items for sale based on location allowing  
-secure image upload, comments between two people, posting by category and location,
+This is a modular app intended to post items for sale allowing  
+secure image upload and store creation with
 third party authentication and authorization. 
 
 ### What do i need to run it?
@@ -12,7 +12,6 @@ third party authentication and authorization.
 * You will need a virtual server:
   * virtualbox - https://www.virtualbox.org/
   * vangrant - https://www.vagrantup.com
-  * note: these are not 100% necessary but recommended. you can also run: python runserver.py
 * Your favorite command-line tool - https://www.gnu.org/software/bash/bash.html
 * latest version of pip (python installation package)
     * can update in CommandLine with: pip install --upgrade pip
@@ -33,7 +32,7 @@ third party authentication and authorization.
     * flask Blueprints
     * flask-login
     * requests(apache style)
-* oauth2client for third party auth
+* oauth2client for third party auth (google+, facebook)
 * Jinja2 templating
 * sqlalchemy database
 * Vagrant VM
