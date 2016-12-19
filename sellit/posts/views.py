@@ -11,8 +11,8 @@ from sqlalchemy import create_engine, desc, asc
 from sqlalchemy.orm import sessionmaker
 from werkzeug.utils import secure_filename
 
-from sellit.database import Base, Posts, User, Store
-from sellit.helpers import ALLOWED_EXTENSIONS, PHOTO_DIR
+from ..database import Base, Posts, User, Store
+from ..helpers import ALLOWED_EXTENSIONS, PHOTO_DIR
 
 from ..auth import auth
 from ..posts import posts

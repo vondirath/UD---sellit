@@ -11,7 +11,7 @@ from oauth2client.client import FlowExchangeError, flow_from_clientsecrets
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from sellit.database import Base, Posts, User
+from ..database import Base, Posts, User
 
 from ..auth import auth
 from ..posts import posts
