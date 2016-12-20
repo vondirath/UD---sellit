@@ -1,0 +1,24 @@
+{# template for store list #}
+{% extends "base.html" %}
+{% block content %}
+{% include "header.html" %}
+<p class="text-center">
+    <a class="btn btn-default text-center" href="{{url_for('posts.newStore')}}">Make a Store!</a>
+</p>
+<div class="container"><!--To -->
+<div class="row"><!--store-list-->
+<style>body {min-height: 500px;}</style>
+{% for store in stores %}
+
+    <div class="col-xs-12 col-sm-6 col-md-3 rwrapper">
+     <div class="rlisting">
+        <a href="{{url_for('posts.viewStore', store_id=store.id)}}"> {{store.name}} </a>
+        </div>
+    </div>
+{% else %}
+{# default block  dont end div's in an else #}
+No Stores entered yet!
+{% endfor %}
+</div><!--posts-list-->
+</div>
+{% endblock content %}

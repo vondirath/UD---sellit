@@ -1,0 +1,49 @@
+{# template for viewing a User and his listings #}
+{% extends "base.html" %}
+{% block content %}
+{% include "header.html" %}
+<div class="container">
+<div class="well well-sm">
+    <h2>What {{ user.name }} is selling!</h2>
+    <a style="float: right; margin-top: -33px;" class="btn btn-default" href='{{ url_for("posts.mainPage")}}'>Go back</a>
+</div>
+</div>
+<div class="container"><!--Top of posts -->
+<div class="row"><!--posts-list-->
+<div class="col-md-3">
+    <div class="sidebar">
+    <div class="row">
+        <div class="sidebar-thumbnail">
+            <img class="img-responsive" src="{{user.picture}}"/>
+        </div>
+    </div>
+    </div>
+</div>
+     {% for post in posts %}
+    <div class="col-xs-12 col-sm-6 col-md-3 rwrapper">
+     <div class="rlisting">
+          <div class="col-md-12 nopad">
+              <a href="{{url_for('posts.viewPost', post_id=post.id)}}">
+                  <img class="img-responsive post-img" src="/static/upload/photos/{{post.img_name}}" alt="Post Image"/>
+              </a>
+        </div>
+            <a href="{{url_for('posts.viewPost', post_id=post.id)}}">
+                        {{ post.title }}
+                    </a>
+              <i class="fa fa-usd dlr">{{ post.price }}</i>
+              <hr>
+            <p class="datetimemain"> 
+            {% if post.time_updated %}
+            Updated: {{ post.time_updated.strftime('%Y-%m-%d') }}
+            {% else %}
+            <p class="datetimemain">{{ post.time_created.strftime('%Y-%m-%d') }}
+            {% endif %}</p>
+     </div>
+    </div>
+        {% else %}
+        {# default block  dont end div's in an else #}
+        No posts entered yet!
+    {% endfor %}
+</div><!--posts-list-->
+</div>
+{% endblock content %}

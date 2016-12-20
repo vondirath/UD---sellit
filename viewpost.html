@@ -1,0 +1,62 @@
+{# template for viewing a post #} 
+{% extends "base.html" %}
+{% block content %}
+{% include "header.html" %}
+<div class="container">
+    <div class="row">
+         <div class="col-md-3">
+            <div class="sidebar">
+                <div class="row">
+                    <div class="sidebar-thumbnail">
+                        <img class="img-responsive" src="{{post.user.picture}}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="thumbnail">
+                <img class="img-responsive" src="/static/upload/photos/{{post.img_name}}" alt="post image" />
+                <div class="caption-fill">
+                    <h4 class="pull-right">
+                        <i class="fa fa-usd dlr">{{ post.price }}</i>
+                    </h4>
+                    <h4>
+                        {{ post.title }}
+                    </h4>
+                    <p>{{ post.description }}</p>
+                    <a href='{{ url_for("auth.show_user", username=post.user_id) }}'>{{post.user.name}}</a>
+                    <p> {{ post.time_created.strftime('%Y-%m-%d')}}</p>
+                </div>
+                <div class="ratings">
+                    <p class="pull-right">3 reviews</p>
+                    <p>
+                        <span class="glyphicon glyphicon-star"></span>
+                        <span class="glyphicon glyphicon-star"></span>
+                        <span class="glyphicon glyphicon-star"></span>
+                        <span class="glyphicon glyphicon-star"></span>
+                        <span class="glyphicon glyphicon-star-empty"></span> 4.0 stars
+                    </p>
+                </div>
+            </div>
+            <div class="btn-group viewpostbtngrp well-sm">
+            {% if post.user_id == login_session['user_id'] %}
+                <a class="btn btn-default" href='{{ url_for("posts.editPost", post_id=post.id) }}'>Edit</a>
+                <a class="btn btn-default" href='{{ url_for("posts.deletePost", post_id=post.id) }}'>Delete</a>
+                <a class="btn btn-default" href='{{url_for("posts.changePic", post_id=post.id) }}'>Change Post Picture</a>
+            {% endif %}
+                <a class="btn btn-default" href='{{ url_for("posts.mainPage")}}'>Go back</a></li>
+            </div>
+            <br>
+        <div class="well">
+            <div class="col-md-6">
+            <img class="img-responsive" src="https://maps.googleapis.com/maps/api/staticmap?center={{post.zipcode}}&zoom=13&size=400x400" />
+            </div>
+        <div class="row well-sm">
+            <div class="col-md-6">
+                <p> This is a Question </p>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

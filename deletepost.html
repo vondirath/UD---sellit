@@ -1,0 +1,18 @@
+{# template for deleteing a post #}
+{% extends "base.html" %}
+{% block content %}
+{% include "header.html" %}
+<div class="container viewbody">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="well">
+            <h1>{{ post.title }}</h1>
+            <h3> Are you sure you want to delete {{post.title}}? </h3>
+                <form action= "{{url_for('posts.deletePost', post_id = post.id)}}" method = 'POST'>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                    <input type='submit', value = 'Delete' class="btn btn-default">
+                </form> 
+            <a class="btn btn-default" style="float: right; margin-top: -33px;" href= '{{url_for("posts.viewPost", post_id=post_id)}}'>Cancel</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

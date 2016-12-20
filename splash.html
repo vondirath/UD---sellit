@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<picture>
+  <source srcset="/static/images/whitemed.jpeg" media="(min-width: 600px)" />
+  <source srcset="/static/images/whitesmall.jpeg" media="(min-width: 400px)" />
+  <img class="jumbopic" src="/static/images/whitexs.jpeg" alt="Image of white antiques" />
+</picture>
+
+<div class="jumbotron text-center">
+  {% include "header.html" %}
+  <p> Welcome to sellit! </p><br>
+
+  <div class="line"></div>
+
+  <p class="subheadsplash"> A site to buy and sell your items, sellit today!</p>
+  <button class="arrow"><i class="fa fa-arrow-down fa-5x" aria-hidden="true"></i></button>
+</div>
+
+<div class="solid">
+  <p> Find and Post by category... </p>
+</div>
+
+<div class="cont1">
+  <div class="scrolltext">
+    <span class="clearborder"></span>
+  </div>
+</div>
+
+<div class="empty">
+  <div class="solid">
+    <p>Sellit with attitude!</p>
+  </div>
+</div>
+
+<div class="cont2">
+  <div class="scrolltext">
+    <span class="clearborder"></span>
+  </div>
+</div>
+
+<div class="row splashrow">
+  <div class="center-block text-center">
+    <a class="loginlink btn btn-primary" href="{{url_for('posts.mainPage')}}">Get started</a>
+  </div>
+</div>
+<style>
+.container {width: 100%; border-radius: 0px;}
+.siteheader {background-color: transparent;}
+footer {margin-top: 0px;}
+</style>
+{% endblock content %}
