@@ -10,6 +10,7 @@
             <form action="{{url_for('posts.changePic', post_id = post.id)}}" method='POST' enctype='multipart/form-data'>
                 <input type='file' name='photo'>
                 <input type='submit' value='Edit' class="btn btn-default">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
             </form>
             <a style=" float: right; margin-top: -33px; " href='{{url_for("posts.viewPost", post_id=post.id)}}' class="btn btn-default">Cancel</a>
         </div>

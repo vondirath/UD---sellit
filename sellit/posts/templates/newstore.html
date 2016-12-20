@@ -9,6 +9,7 @@
             <form action="{{url_for('posts.newStore')}}" method='post' enctype='multipart/form-data'>
                 <div class="form-group">
                     <input type='text' size='30' name='name' placeholder="Name:">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
                 </div>
                 <br>
                 <input type='submit' value='Create' class="btn btn-default">

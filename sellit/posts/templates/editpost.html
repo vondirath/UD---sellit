@@ -18,6 +18,7 @@
                     <input type='text' size='30' name='price' placeholder='{{ post.price }}'>
                 </div><br>
                 <input type='submit' value='Edit' class="btn btn-default">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
             </form>
             <a style="float: right; margin-top: -33px;" href='{{url_for("posts.viewPost", post_id=post.id)}}' class="btn btn-default">Cancel</a>
         </div>
