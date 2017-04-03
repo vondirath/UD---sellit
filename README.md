@@ -11,7 +11,7 @@ third party authentication and authorization.
 * Python 2.7 - https://www.python.org/
 * You will need a virtual server:
   * virtualbox - https://www.virtualbox.org/
-  * vangrant - https://www.vagrantup.com
+  * vagrant - https://www.vagrantup.com
 * Your favorite command-line tool - https://www.gnu.org/software/bash/bash.html
 * latest version of pip (python installation package)
     * can update in CommandLine with: pip install --upgrade pip
